@@ -1,170 +1,227 @@
-library(vcfR)
-library(data.table)
-library(stringr)
-library(seqinr)
-
+# library(vcfR)
+# library(data.table)
+# library(stringr)
+# library(seqinr)
 # library(stringdist)
 
-rm(list = ls())
+base::rm(list = ls())
 
 
-bases = c("A", "G", "C", "T", "-")
+bases = base::c("A", "G", "C", "T", "-")
+
+reference.path = "NC_045512.fasta"
+
+vcf.path = "vcf-files/L1_S22_L001_freebayes.vcf"
+
+decision.rules.path = "decision_tree_rules_2021_01_13.txt"
+
+nreads = 69706
 
 
 #---- create reference based rules 
 
-ref = seqinr::read.fasta("NC_045512.fasta")
-ref = as.character(ref[[1]])
+start.time = base::Sys.time()
 
-ref = data.table(pos = 1:length(ref),
-                 logic.expr = "==",
-                 base = str_to_upper(ref))
+ref = seqinr::read.fasta(reference.path)
+ref = base::as.character(ref[[1]])
 
-ref$whole.expr = paste(ref$pos, ref$logic.expr, "'", ref$base, "'", sep = "")
+ref = data.table::data.table(pos = 1:base::length(ref),
+                             logic.expr = "==",
+                             base = stringr::str_to_upper(ref))
+
+ref$whole.expr = base::paste(ref$pos, 
+                             ref$logic.expr, 
+                             "'", ref$base, "'", 
+                             sep = "")
 
 #---- find variances
 
-vcf.file = read.vcfR("vcf-files/L1_S22_L001_sars_variants_filtered.vcf", verbose = FALSE)
+vcf.file = vcfR::read.vcfR(vcf.path, verbose = FALSE)
 fix = data.table::as.data.table(vcf.file@fix)
 
-rm(vcf.file)
+gt.tidy = vcfR::extract_gt_tidy(vcf.file, verbose = FALSE)
 
-fix = fix[which(fix$ALT != "<*>"), ]
-fix$ALT = str_remove_all(fix$ALT, "\\,<\\*>")
+gt.ad = stringr::str_split(gt.tidy$gt_AD, ",", simplify = TRUE)
+gt.ad = data.table::as.data.table(gt.ad)
 
-ALT = str_split(fix$ALT, ",", simplify = TRUE)
+Avg.DP = mean(gt.tidy$gt_DP)
+gt.ad$dp = gt.tidy$gt_DP
 
-out = list()
-
-for(i in 1:ncol(ALT)) {
+for(i in 1:ncol(gt.ad)) {
   
-  who = which(ALT[,i] != "")
-  
-  out[[i]] = data.table(pos = fix[who, ]$POS,
-                        ref = fix[who, ]$REF,
-                        alt = ALT[who, i])
+  gt.ad[[i]] = base::as.numeric(gt.ad[[i]])
   
 }
 
-fix = rbindlist(out)
+gt.ad$pos = fix$POS
 
-rm(out, ALT, i, who)
+excluded.pos = gt.ad[which(gt.ad[[1]] == 0), ]$pos
 
-comp = list()
+ref = ref[which(!(ref$pos %in% as.numeric(excluded.pos))), ]
+
+base::rm(vcf.file, reference.path)
+
+fix = fix[base::which(fix$ALT != "<*>"), ]
+fix$ALT = stringr::str_remove_all(fix$ALT, "\\,<\\*>")
+
+ALT = stringr::str_split(fix$ALT, ",", simplify = TRUE)
+
+out = base::list()
+
+for(i in 1:base::ncol(ALT)) {
+  
+  who = base::which(ALT[,i] != "")
+  
+  out[[i]] = data.table::data.table(pos = fix[who, ]$POS,
+                                    ref = fix[who, ]$REF,
+                                    alt = ALT[who, i],
+                                    ad = gt.ad[who, ][[i + 1]],
+                                    dp = gt.ad[who, ]$dp)
+  
+}
+
+fix = data.table::rbindlist(out)
+
+base::rm(out, ALT, i, who)
+
+comp = base::list()
 
 exclude = c()
 
-for(i in 1:nrow(fix)){
+for(i in 1:base::nrow(fix)){
   
-  ref.len = str_length(fix[i,]$ref)
-  alt.len = str_length(fix[i,]$alt)
-  # exclude = c()
+  ref.len = stringr::str_length(fix[i,]$ref)
+  alt.len = stringr::str_length(fix[i,]$alt)
   
   if((ref.len == 1) & (alt.len == 1)) {
     
-    temp = data.table(pos = fix[i,]$pos,
-                      logic.expr = "==",
-                      base = fix[i,]$alt)
+    temp = data.table::data.table(pos = fix[i,]$pos,
+                                  logic.expr = "==",
+                                  base = fix[i,]$alt)
     
-    temp$whole.expr = paste(temp$pos, temp$logic.expr, "'", temp$base, "'", sep = "")
+    temp$whole.expr = base::paste(temp$pos, 
+                                  temp$logic.expr, 
+                                  "'", temp$base, "'", 
+                                  sep = "")
+    
+    temp$ad = fix[i,]$ad
+    temp$dp = fix[i,]$dp
     
     comp[[i]] = temp
     
   } else if((ref.len != 1) & (alt.len == 1)) {
     
-    ref.split = str_split(fix[i,]$ref, "", simplify = TRUE)
+    ref.split = stringr::str_split(fix[i,]$ref, "", simplify = TRUE)
     
-    temp = data.table(pos = c(as.numeric(fix[i,]$pos), as.numeric(fix[i,]$pos) + 1:(ref.len - 1)),
-                      logic.expr = "==",
-                      base = c(fix[i,]$alt, rep("-", ref.len - 1)))
+    temp = data.table::data.table(pos = c(base::as.numeric(fix[i,]$pos), base::as.numeric(fix[i,]$pos) + 1:(ref.len - 1)),
+                                  logic.expr = "==",
+                                  base = c(fix[i,]$alt, base::rep("-", ref.len - 1)))
     
-    temp$whole.expr = paste(temp$pos, temp$logic.expr, "'", temp$base, "'", sep = "")
+    temp$whole.expr = base::paste(temp$pos, 
+                                  temp$logic.expr, 
+                                  "'", temp$base, "'", 
+                                  sep = "")
+    
+    temp$ad = fix[i,]$ad
+    temp$dp = fix[i,]$dp
     
     comp[[i]] = temp
     
   } else if((ref.len != 1) & (alt.len != 1) & (ref.len == alt.len)) {
     
-    ref.split = str_split(fix[i,]$ref, "", simplify = TRUE)
-    alt.split = str_split(fix[i,]$alt, "", simplify = TRUE)
+    ref.split = stringr::str_split(fix[i,]$ref, "", simplify = TRUE)
+    alt.split = stringr::str_split(fix[i,]$alt, "", simplify = TRUE)
     
-    ref.split = as.vector(ref.split)
-    alt.split = as.vector(alt.split)
+    ref.split = base::as.vector(ref.split)
+    alt.split = base::as.vector(alt.split)
     
     diff = stringdist::stringdist(ref.split, alt.split)
     
-    who = which(diff != 0)
+    who = base::which(diff != 0)
     
-    temp = data.table(pos = c(as.numeric(fix[i,]$pos) + who - 1),
-                      logic.expr = "==",
-                      base = alt.split[who])
+    temp = data.table::data.table(pos = c(base::as.numeric(fix[i,]$pos) + who - 1),
+                                  logic.expr = "==",
+                                  base = alt.split[who])
     
-    temp$whole.expr = paste(temp$pos, temp$logic.expr, "'", temp$base, "'", sep = "")
+    temp$whole.expr = base::paste(temp$pos, 
+                                  temp$logic.expr, 
+                                  "'", temp$base, "'", 
+                                  sep = "")
+    
+    temp$ad = fix[i,]$ad
+    temp$dp = fix[i,]$dp
     
     comp[[i]] = temp
     
   } else if((ref.len != 1) & (alt.len != 1) & (ref.len > alt.len)) {
     
-    ref.split = str_split(fix[i,]$ref, "", simplify = TRUE)
-    alt.split = str_split(fix[i,]$alt, "", simplify = TRUE)
+    ref.split = stringr::str_split(fix[i,]$ref, "", simplify = TRUE)
+    alt.split = stringr::str_split(fix[i,]$alt, "", simplify = TRUE)
     
-    ref.split = as.vector(ref.split)
-    alt.split = as.vector(alt.split)
+    ref.split = base::as.vector(ref.split)
+    alt.split = base::as.vector(alt.split)
     
     alt.j = 1
     
     gaps = c()
     
-    for(j in 1:length(ref.split)) {
+    for(j in 1:base::length(ref.split)) {
       
       if(ref.split[j] != alt.split[alt.j]) {
         
-        gaps = c(gaps, 
-                 as.numeric(fix[i,]$pos) + j - 1)
+        gaps = base::c(gaps, 
+                       base::as.numeric(fix[i,]$pos) + j - 1)
         
       } else {
         
-        alt.j = ifelse((alt.j + 1) > alt.len, alt.len, alt.j + 1)
+        alt.j = base::ifelse((alt.j + 1) > alt.len, alt.len, alt.j + 1)
         
       }
       
     }
     
-    if(is.null(gaps)) {
+    if(base::is.null(gaps)) {
       
-      gaps = as.numeric(fix[i,]$pos) + 1
+      gaps = base::as.numeric(fix[i,]$pos) + 1
       
     }
     
-    temp = data.table(pos = gaps,
-                      logic.expr = "==",
-                      base = "-")
+    temp = data.table::data.table(pos = gaps,
+                                  logic.expr = "==",
+                                  base = "-")
     
-    temp$whole.expr = paste(temp$pos, temp$logic.expr, "'", temp$base, "'", sep = "")
+    temp$whole.expr = base::paste(temp$pos, 
+                                temp$logic.expr, 
+                                "'", temp$base, "'", 
+                                sep = "")
+    
+    temp$ad = fix[i,]$ad
+    temp$dp = fix[i,]$dp
     
     comp[[i]] = temp
     
     
   } else if((ref.len != 1) & (alt.len != 1) & (ref.len < alt.len)) {
     
-    ref.split = str_split(fix[i,]$ref, "", simplify = TRUE)
-    alt.split = str_split(fix[i,]$alt, "", simplify = TRUE)
+    ref.split = stringr::str_split(fix[i,]$ref, "", simplify = TRUE)
+    alt.split = stringr::str_split(fix[i,]$alt, "", simplify = TRUE)
     
-    ref.split = as.vector(ref.split)
-    alt.split = as.vector(alt.split)
+    ref.split = base::as.vector(ref.split)
+    alt.split = base::as.vector(alt.split)
     
     ref.j = ref.len
     
-    insertions = c()
+    insertions = base::c()
     
-    for(j in length(alt.split):1) {
+    for(j in base::length(alt.split):1) {
       
       if(alt.split[j] != ref.split[ref.j]) {
         
-        insertions = c(insertions, j)
+        insertions = base::c(insertions, j)
         
       } else {
         
-        ref.j = ifelse((ref.j - 1) < 0, 1, ref.j - 1)
+        ref.j = base::ifelse((ref.j - 1) < 0, 1, ref.j - 1)
         
       }
       
@@ -172,125 +229,174 @@ for(i in 1:nrow(fix)){
     
     if(length(insertions) == 1) {
       
-      temp = data.table(pos = c(as.numeric(fix[i,]$pos) + insertions - 1),
-                        logic.expr = "==",
-                        base = alt.split[insertions])
+      temp = data.table::data.table(pos = base::c(as.numeric(fix[i,]$pos) + insertions - 1),
+                                    logic.expr = "==",
+                                    base = alt.split[insertions])
       
-      temp$whole.expr = paste(temp$pos, temp$logic.expr, "'", temp$base, "'", sep = "")
+      temp$whole.expr = base::paste(temp$pos, 
+                                    temp$logic.expr, 
+                                    "'", temp$base, "'", 
+                                    sep = "")
+      
+      temp$ad = fix[i,]$ad
+      temp$dp = fix[i,]$dp
       
       comp[[i]] = temp
       
     } else {
       
-      exclude = c(exclude, i)
+      exclude = base::c(exclude, i)
     }
   
   } else {
     
-    exclude = c(exclude, i)
+    exclude = base::c(exclude, i)
     
   }
   
 }
 
-comp = rbindlist(comp)
+# cat("Excluded variants: \n")
+# fix[exclude, ]
+# cat("\n\n")
+
+comp = data.table::rbindlist(comp)
 
 fix = comp
 
-rm(list=setdiff(ls(), c("fix", "ref", "bases")))
-
-fix = rbind(ref[which(!(ref$pos %in% fix$pos)), ],
-            fix)
+base::rm(list = base::setdiff(base::ls(), 
+                              base::c("fix", "ref", "bases", "start.time", "decision.rules.path", "vcf.path", "nreads", "Avg.DP")))
 
 fix$pos = as.numeric(fix$pos)
 
-fix = fix[order(fix$pos), ]
+who = match(ref$pos, fix$pos)
+
+ref$ad = fix[who, ]$dp - fix[who, ]$ad
+ref$dp = fix[who, ]$dp # - fix[who, ]$ad
+
+ref[which(is.na(ref$dp)), ]$ad = 0 # nreads
+ref[which(is.na(ref$dp)), ]$dp = 0 # nreads
+
+fix = base::rbind(ref, fix)
+
+fix$pos = base::as.numeric(fix$pos)
+
+fix = fix[base::order(fix$pos), ]
 
 
 one.run = function(x, bases) {
+
+  out = data.table::data.table(pos = base::as.numeric(x[1]),
+                               logic.expr = "!=",
+                               base = bases[!(bases %in% x[3])])
   
-  # all = all[which(all$pos == x), ] 
+  out$whole.expr = base::paste(out$pos, 
+                               out$logic.expr, 
+                               "'", out$base, "'", 
+                               sep = "")
   
-  out = data.table(pos = as.numeric(x[1]),
-                   logic.expr = "!=",
-                   base = bases[!(bases %in% x[3])])
+  out$ad = x[5]
+  out$dp = x[6]
   
-  out$whole.expr = paste(out$pos, out$logic.expr, "'", out$base, "'", sep = "")
-  
-  return(out)
+  base::return(out)
 }
 
-# pos = unique(fix$pos)
 
-comp = apply(fix, 1, one.run, bases = bases)
+comp = base::apply(fix, 1, one.run, bases = bases)
 
-comp = rbindlist(comp)
+comp = data.table::rbindlist(comp)
 
-comp = rbind(fix, comp)
+comp = base::rbind(fix, comp)
+
+comp = unique(comp)
+comp = comp[order(comp$pos), ]
+
+comp$ad = as.numeric(comp$ad)
+comp$dp = as.numeric(comp$dp)
+
+base::rm(bases, one.run, fix, ref)
 
 #---- read decision rules
 
-rm(bases, one.run, fix, ref)
+decisions = data.table::fread(decision.rules.path, header = FALSE)
 
-decisions = data.table::fread("decision_tree_rules_2021_01_13.txt", header = FALSE)
+rules = stringr::str_split(decisions$V2, ",", simplify = TRUE)
+rules = data.table::as.data.table(rules)
 
-rules = str_split(decisions$V2, ",", simplify = TRUE)
-rules = as.data.table(rules)
+# original.rules = rules
+# 
+# one.run = function(x, expr, AD, DP) {
+#   
+#   x = x[base::which(x != "")]
+#   AD = AD[base::which(expr %in% x)]
+#   AD = AD[which(AD != 0)]
+#   
+#   # DP = DP[base::which(expr %in% x)]
+#   # DP = DP[which(DP != 0)]
+#   
+#   expr = unique(expr[base::which(expr %in% x)])
+#   
+#   
+#   out = data.table::data.table(total.len = base::length(x),
+#                                total.overlap = base::length(expr) # ,
+#                                # avg.ad = base::mean(AD) # , 
+#                                # avg.dp = base::mean(DP)
+#                                )
+#   
+#   base::return(out)
+#   
+# }
+# 
+# rules.stats = base::apply(rules, 1, one.run, comp$whole.expr, comp$ad, comp$dp)
+# rules.stats = data.table::rbindlist(rules.stats)
+# 
+# rules$n.rules = rules.stats$total.len
+# 
+# rules$n.totalOverlap = rules.stats$total.overlap
 
-one.run = function(x, expr) {
-  
-  x = x[which(x != "")]
-  
-  out = data.table(total.len = length(x),
-                   total.overlap = length(which(expr %in% x)))
-  
-  return(out)
-  
-}
+# rules$avg.ad = rules.stats$avg.ad
+# rules$avg.dp = rules.stats$avg.dp
 
-rules.stats = apply(rules, 1, one.run, comp$whole.expr)
-rules.stats = rbindlist(rules.stats)
-
-rules$n.rules = rules.stats$total.len
-
-rules$n.totalOverlap = rules.stats$total.overlap
-
-out = list()
+out = base::list()
 k = 1
 
-for(i in 1:(ncol(rules) - 2)) {
+for(i in 1:(base::ncol(rules))) {
   
   who = rules[[i]] == ""
   
-  if(length(which(who)) > 0){
+  if(base::length(which(who)) > 0){
     
-    temp = decisions[which(who), ]
-    temp$total = rules[which(who), ]$n.rules
+    temp = decisions[base::which(who), ]
+    # temp$total = rules[base::which(who), ]$n.rules
     temp$tree.overlap = i - 1
-    temp$total.overlap = rules[which(who), ]$n.totalOverlap
+    # temp$total.overlap = rules[base::which(who), ]$n.totalOverlap
     
-    # temp$ratio = temp$overlap / temp$total
+    
+    # temp$total.avg.ad = rules[base::which(who), ]$avg.ad
+    # temp$avg.dp = rules[base::which(who), ]$avg.dp
     
     out[[k]] = temp
     
     k = k + 1
     
-    decisions = decisions[which(!who), ]
-    rules = rules[which(!who), ]
+    decisions = decisions[base::which(!who), ]
+    rules = rules[base::which(!who), ]
     
   }
   
-  if(nrow(decisions) > 0) {
+  if(base::nrow(decisions) > 0) {
     who = rules[[i]] %in% comp$whole.expr
     
-    temp = decisions[which(!who), ]
+    temp = decisions[base::which(!who), ]
     
     if(nrow(temp) > 0) {
-      temp$total = rules[which(!who), ]$n.rules
-      temp$tree.overlap = i - 1
-      temp$total.overlap = rules[which(!who), ]$n.totalOverlap
       
-      # temp$ratio = temp$overlap / temp$total
+      # temp$total = rules[base::which(!who), ]$n.rules
+      temp$tree.overlap = i - 1
+      # temp$total.overlap = rules[base::which(!who), ]$n.totalOverlap
+      
+      # temp$avg.ad = rules[base::which(!who), ]$avg.ad
+      # temp$avg.dp = rules[base::which(!who), ]$avg.dp
       
       out[[k]] = temp
       
@@ -298,10 +404,9 @@ for(i in 1:(ncol(rules) - 2)) {
       
     }
     
-    decisions = decisions[which(who), ]
-    rules = rules[which(who), ]
+    decisions = decisions[base::which(who), ]
+    rules = rules[base::which(who), ]
     
-    cat(c("Rule:", i, "\n"))
   } else {
     
     break
@@ -310,16 +415,86 @@ for(i in 1:(ncol(rules) - 2)) {
   
 }
 
+out = data.table::rbindlist(out)
 
-out = rbindlist(out)
+
+# rules = stringr::str_split(out$V2, ",", simplify = TRUE)
+# rules = data.table::as.data.table(rules)
+# 
+# rules
+ 
+one.run = function(x, expr, AD, DP) {
+  
+  rules = stringr::str_split(x[2], ",", simplify = TRUE)
+  rules = as.vector(rules)
+
+  tree.who = base::which(expr %in% rules[1:as.integer(x[3])])
+  total.who = base::which(expr %in% rules)
+  
+  tree.AD = AD[tree.who]
+  tree.AD = tree.AD[which(tree.AD != 0)]
+  
+  total.AD = AD[total.who]
+  total.AD = total.AD[which(total.AD != 0)]
+
+  expr = unique(expr[total.who])
+
+
+  stats = data.table::data.table(total.overlap = base::length(expr),
+                                 total.len = base::length(rules),
+                                 tree.avg.ad = base::mean(tree.AD),
+                                 total.avg.ad = base::mean(total.AD))
+
+  base::return(stats)
+
+}
+
+rules.stats = base::apply(out, 1, one.run, comp$whole.expr, comp$ad, comp$dp)
+rules.stats = data.table::rbindlist(rules.stats)
+
+out$total.overlap = rules.stats$total.overlap
+out$total = rules.stats$total.len
+out$tree.avg.ad = rules.stats$tree.avg.ad
+out$total.avg.ad = rules.stats$total.avg.ad
 
 out$tree.ratio = out$tree.overlap / out$total
 out$total.ratio = out$total.overlap / out$total
 
-out = out[order(out$tree.ratio, decreasing = TRUE), ]
+out$avg.dp = Avg.DP
+out$total.run.reads = nreads
 
-colnames(out) = c("Lineage", "Rules", "Total", "Tree.Overlap", "Total.Overlap", "Tree.Ratio", "Total.Ratio")
+out = out[base::order(out$tree.ratio, decreasing = TRUE), ]
 
-write.table(out, "OverLine-L1_S22_L001_sars_variants_filtered.tsv", row.names = FALSE, quote = FALSE, sep = "\t")
+base::colnames(out) = base::c("Lineage", "Rules", 
+                              "Tree.Overlap", "Total.Overlap", "Total",
+                              "Tree.Avg.AD", "Total.Avg.AD", 
+                              "Tree.Ratio", "Total.Ratio",
+                              "Avg.DP", "Total.Run.Reads")
 
-rm(list=setdiff(ls(), c("out", "comp", "decisions")))
+out = out[,c("Lineage", "Rules", "Total", "Tree.Overlap", "Total.Overlap", "Tree.Ratio", "Total.Ratio", "Tree.Avg.AD", "Total.Avg.AD", "Avg.DP", "Total.Run.Reads")]
+
+end.time = base::Sys.time()
+
+utils::write.table(out, 
+                   paste(stringr::str_replace(vcf.path, ".vcf", "-lineagespot.tsv"), sep = ""), 
+                   row.names = FALSE, 
+                   quote = FALSE, 
+                   sep = "\t")
+
+base::rm(list = base::setdiff(base::ls(), 
+                              base::c("out", "comp", "decisions", "start.time", "end.time")))
+
+end.time - start.time
+
+
+
+
+
+
+
+
+
+
+
+
+
