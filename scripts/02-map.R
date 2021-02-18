@@ -1,7 +1,7 @@
 # clear
-cat("\014")
-rm(list = ls())
-dev.off(dev.list()["RStudioGD"])
+# cat("\014")
+# rm(list = ls())
+# dev.off(dev.list()["RStudioGD"])
 
 # source
 source("help_functions.R")
@@ -18,7 +18,7 @@ library(openxlsx)
 total_ratio_threshold <- 0.75
 tree_ratio_threshold <- 0 # We keep the rows that have Total.Tree.Ratio >= tree_ratio_threshold (meaningless here)
 
-#-------------------- INPUT FILES ----------------------------------------------
+# -------------------- INPUT FILES ----------------------------------------------
 samples_detected_filepath <- 'lineages_detected/INFO FOR FOTIS.xlsx' # (fotis file)
 
 analysis_output_folder <- 'new-vcf-files'
@@ -26,7 +26,7 @@ analysis_output_filename <- 'L1_S22_L001_freebayes-lineagespot-new.tsv'
 analysis_output_filepath <- paste(analysis_output_folder, analysis_output_filename,sep = '/')
 
 
-#---------------------- Importing detected lineages ----------------------------
+# ---------------------- Importing detected lineages ----------------------------
 # Detected lineages
 lineages_detected <- read.xlsx(samples_detected_filepath, sheet = 1, startRow = 1, colNames = TRUE, rowNames = FALSE)
 lineages_detected$DATE.OF.RECEIPT <- as.Date(lineages_detected$DATE.OF.RECEIPT, format = "%d.%m.%y")

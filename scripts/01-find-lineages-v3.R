@@ -13,13 +13,20 @@ base::rm(list = ls())
 
 bases = base::c("A", "G", "C", "T", "-")
 
-reference.path = "NC_045512.fasta"
+reference.path = "ref/NC_045512.fasta"
 
 vcf.path = "vcf-files/L1_S22_L001_freebayes.vcf"
 
-decision.rules.path = "decision_tree_rules_2021_01_13.txt"
+decision.rules.path = "ref/decision_tree_rules_2021_02_17.txt"
 
 nreads = 69706
+
+
+utils::download.file(
+  url = "https://raw.githubusercontent.com/cov-lineages/pangoLEARN/master/pangoLEARN/data/decision_tree_rules.txt",
+  destfile = decision.rules.path,
+  method = "curl"
+)
 
 
 # Create reference based rules ----------------------------------
@@ -318,7 +325,7 @@ base::rm(bases, one.run, fix, ref)
 
 # Create decision making rules ----------------------------------
 
-decisions = data.table::fread(decision.rules.path, header = FALSE)
+decisions = data.table::fread(decision.rules.path, header = FALSE, sep = "\t", skip = 1)
 
 rules = stringr::str_split(decisions$V2, ",", simplify = TRUE)
 rules = data.table::as.data.table(rules)
@@ -475,7 +482,7 @@ out = out[,c("Lineage", "Rules", "Total", "Tree.Overlap", "Total.Overlap", "Tree
 end.time = base::Sys.time()
 
 utils::write.table(out, 
-                   paste(stringr::str_replace(vcf.path, ".vcf", "-lineagespot.tsv"), sep = ""), 
+                   paste(stringr::str_replace(vcf.path, ".vcf", "-lineagespot-v2.tsv"), sep = ""), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
