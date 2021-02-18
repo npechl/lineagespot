@@ -27,6 +27,7 @@ collapse_lineages_table <- function(lineages_pred){
   for (lin in lineages){
     lin_positions <- which(lineages_pred$Lineage == lin)
     lin_table <- lineages_pred[lin_positions, ]
+    pos_of_max <- which(lin_table$Tree.Ratio == max(lin_table$Tree.Ratio))
     
     max_tree_ratio <- max(lin_table$Tree.Ratio)
     max_total_ratio <- max(lin_table$Total.Ratio)
@@ -35,12 +36,16 @@ collapse_lineages_table <- function(lineages_pred){
     
     tree_av_av_ad <- mean(lin_table$Tree.Avg.AD)
     total_av_av_ad <- mean(lin_table$Total.Avg.AD)
+    total_av_ad_of_line <- lin_table[pos_of_max,]$Total.Avg.AD
     
-    lineages_new <- rbind(lineages_new, c(lin,max_tree_ratio,max_total_ratio, max_tree_av_ad, max_total_av_ad, tree_av_av_ad, total_av_av_ad))
+    lineages_new <- rbind(lineages_new, c(lin,max_tree_ratio,max_total_ratio, 
+                                          max_tree_av_ad, max_total_av_ad, 
+                                          tree_av_av_ad, total_av_av_ad, total_av_ad_of_line))
   }
 
   lineages_new <- as.data.frame(lineages_new)
-  colnames(lineages_new) <- c("Lineage", "Max.Tree.Ratio","Max.Total.Ratio", "Max.Tree.Av.AD", "Max.Total.Av.AD", "Tree.Av.Av.AD", "Total.Av.Av.AD")
+  colnames(lineages_new) <- c("Lineage", "Max.Tree.Ratio","Max.Total.Ratio", "Max.Tree.Av.AD", 
+                              "Max.Total.Av.AD", "Tree.Av.Av.AD", "Total.Av.Av.AD", "Total.Av.AD.of.Line")
   
   lineages_new <- lineages_new[order(lineages_new$Max.Total.Ratio, decreasing = T),]
   
@@ -71,6 +76,7 @@ add_columns_to_initial_matrix <- function(lineages_pred, lineages_collapsed){
     lineages_pred[lin_positions,]$Tree.Av.Av.AD <- lineages_collapsed[pos,]$Tree.Av.Av.AD
     lineages_pred[lin_positions,]$Total.Av.Av.AD <- lineages_collapsed[pos,]$Total.Av.Av.AD
     
+    # Change total avg ad
     pos <- pos + 1
   }
   

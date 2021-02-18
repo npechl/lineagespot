@@ -39,11 +39,15 @@ december_lineages_perc <- perc_of_lineages(lineages_december$Lineage)
 # ------------------ Importing results from our analysis -----------------------
 
 # Import lineages from our analysis
-path <- 'lineages-in-bam_new/L1_S22_L001_freebayes-lineagespot.tsv'
+folder <- 'new-vcf-files'
+file <- 'L1_S22_L001_freebayes-lineagespot-old.tsv'
+filename <- strsplit(file, '.', fixed = TRUE)[[1]][1]
+path <- paste(folder, file, sep = '/')
 lineages_pred <- read.csv(path, sep = '\t')
 
-# Filter lineages,keep only those that have tree ratio > 0
-lineages_pred <- lineages_pred[which(lineages_pred$Tree.Ratio > tree_ratio_threshold), ]
+# Filter lineages,keep only those that have tree ratio >= 0 (absolutely nothing :P)
+lineages_pred <- lineages_pred[which(lineages_pred$Total.Avg.AD != 0), ]
+lineages_pred <- lineages_pred[which(lineages_pred$Tree.Ratio >= tree_ratio_threshold), ]
 
 # Collapse
 lineages_collapsed <- collapse_lineages_table(lineages_pred)
@@ -52,12 +56,12 @@ lineages_collapsed <- collapse_lineages_table(lineages_pred)
 lineages_pred <- add_columns_to_initial_matrix(lineages_pred, lineages_collapsed )
 
 # Save tables
-utils::write.table(lineages_pred, file = 'lineages-in-bam_new/L1_S22_L001_freebayes-lineagespot_modified.tsv', 
+utils::write.table(lineages_pred, file = paste(folder, '/', filename, '_modified.tsv', sep = ''), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
 
-utils::write.table(lineages_collapsed, file = 'lineages-in-bam_new/L1_S22_L001_freebayes-lineagespot_collapsed.tsv', 
+utils::write.table(lineages_collapsed, file = paste(folder, '/', filename, '_collapsed.tsv', sep = ''), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
