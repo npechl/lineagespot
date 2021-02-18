@@ -16,12 +16,19 @@ library(openxlsx)
 # ---------------------- PARAMETERS --------------------------------------------
 # Specify thresholds for tree ration and total ratio
 total_ratio_threshold <- 0.75
-tree_ratio_threshold <- 0
+tree_ratio_threshold <- 0 # We keep the rows that have Total.Tree.Ratio >= tree_ratio_threshold (meaningless here)
 
-#---------------------- Importing detected lineages ---------------------------
+#-------------------- INPUT FILES ----------------------------------------------
+samples_detected_filepath <- 'lineages_detected/INFO FOR FOTIS.xlsx' # (fotis file)
+
+analysis_output_folder <- 'new-vcf-files'
+analysis_output_filename <- 'L1_S22_L001_freebayes-lineagespot-new.tsv'
+analysis_output_filepath <- paste(analysis_output_folder, analysis_output_filename,sep = '/')
+
+
+#---------------------- Importing detected lineages ----------------------------
 # Detected lineages
-path <- 'lineages_detected/INFO FOR FOTIS.xlsx'
-lineages_detected <- read.xlsx(path, sheet = 1, startRow = 1, colNames = TRUE, rowNames = FALSE)
+lineages_detected <- read.xlsx(samples_detected_filepath, sheet = 1, startRow = 1, colNames = TRUE, rowNames = FALSE)
 lineages_detected$DATE.OF.RECEIPT <- as.Date(lineages_detected$DATE.OF.RECEIPT, format = "%d.%m.%y")
 lineages_detected <- lineages_detected[order(lineages_detected$DATE.OF.RECEIPT), ] # Sort by date
 
@@ -39,11 +46,8 @@ december_lineages_perc <- perc_of_lineages(lineages_december$Lineage)
 # ------------------ Importing results from our analysis -----------------------
 
 # Import lineages from our analysis
-folder <- 'new-vcf-files'
-file <- 'L1_S22_L001_freebayes-lineagespot-old.tsv'
-filename <- strsplit(file, '.', fixed = TRUE)[[1]][1]
-path <- paste(folder, file, sep = '/')
-lineages_pred <- read.csv(path, sep = '\t')
+filename <- strsplit(analysis_output_filename, '.', fixed = TRUE)[[1]][1]
+lineages_pred <- read.csv(analysis_output_filepath, sep = '\t')
 
 # Filter lineages,keep only those that have tree ratio >= 0 (absolutely nothing :P)
 lineages_pred <- lineages_pred[which(lineages_pred$Total.Avg.AD != 0), ]
@@ -56,12 +60,12 @@ lineages_collapsed <- collapse_lineages_table(lineages_pred)
 lineages_pred <- add_columns_to_initial_matrix(lineages_pred, lineages_collapsed )
 
 # Save tables
-utils::write.table(lineages_pred, file = paste(folder, '/', filename, '_modified.tsv', sep = ''), 
+utils::write.table(lineages_pred, file = paste(analysis_output_folder, '/', filename, '_modified.tsv', sep = ''), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
 
-utils::write.table(lineages_collapsed, file = paste(folder, '/', filename, '_collapsed.tsv', sep = ''), 
+utils::write.table(lineages_collapsed, file = paste(analysis_output_folder, '/', filename, '_collapsed.tsv', sep = ''), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
