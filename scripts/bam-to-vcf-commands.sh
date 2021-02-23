@@ -13,5 +13,5 @@ freebayes \
 -f /work/nikospech/SARS-CoV-2/ref/NC_045512.fasta \
 -F 0.01 \
 -C 1 \
---pooled-continuous L1_S22_L001_sorted_uniq.bam > L1_S22_L001_freebayes.vcf
+--pooled-continuous Sewage-L2_S10_L001_sorted_uniq.bam > Sewage-L2_S10_L001_freebayes.vcf
 

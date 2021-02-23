@@ -15,9 +15,9 @@ bases = base::c("A", "G", "C", "T", "-")
 
 reference.path = "ref/NC_045512.fasta"
 
-vcf.path = "vcf-files/L1_S22_L001_freebayes.vcf"
+vcf.path = "vcf-files/Sewage-L2_S10_L001_freebayes.vcf"
 
-decision.rules.path = "ref/decision_tree_rules_2021_02_17.txt"
+decision.rules.path = "ref/decision_tree_rules.txt"
 
 nreads = 69706
 

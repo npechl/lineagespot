@@ -22,12 +22,12 @@ collapse_lineages_table <- function(lineages_pred){
   
   lineages <- unique(lineages_pred$Lineage)
   
-  lineages_new <- NULL
+  lineages_new <- list()
   
   for (lin in lineages){
     lin_positions <- which(lineages_pred$Lineage == lin)
     lin_table <- lineages_pred[lin_positions, ]
-    pos_of_max <- which(lin_table$Tree.Ratio == max(lin_table$Tree.Ratio))
+    pos_of_max <- which(lin_table$Total.Ratio == max(lin_table$Total.Ratio))
     
     max_tree_ratio <- max(lin_table$Tree.Ratio)
     max_total_ratio <- max(lin_table$Total.Ratio)
@@ -36,20 +36,26 @@ collapse_lineages_table <- function(lineages_pred){
     
     tree_av_av_ad <- mean(lin_table$Tree.Avg.AD)
     total_av_av_ad <- mean(lin_table$Total.Avg.AD)
-    total_av_ad_of_line <- lin_table[pos_of_max,]$Total.Avg.AD
+    total_av_ad_of_line <- max(lin_table[pos_of_max,]$Total.Avg.AD)
     
-    lineages_new <- rbind(lineages_new, c(lin,max_tree_ratio,max_total_ratio, 
-                                          max_tree_av_ad, max_total_av_ad, 
-                                          tree_av_av_ad, total_av_av_ad, total_av_ad_of_line))
+    lineages_new[[lin]] <- data.table::data.table("Lineage" = lin, 
+                                                  "Max.Tree.Ratio" = max_tree_ratio,
+                                                  "Max.Total.Ratio" = max_total_ratio, 
+                                                  "Max.Tree.Av.AD" = max_tree_av_ad, 
+                                                  "Max.Total.Av.AD" = max_total_av_ad, 
+                                                  "Tree.Av.Av.AD" = tree_av_av_ad, 
+                                                  "Total.Av.Av.AD" = total_av_av_ad, 
+                                                  "Total.Av.AD.of.Line" = total_av_ad_of_line)
   }
 
-  lineages_new <- as.data.frame(lineages_new)
-  colnames(lineages_new) <- c("Lineage", "Max.Tree.Ratio","Max.Total.Ratio", "Max.Tree.Av.AD", 
-                              "Max.Total.Av.AD", "Tree.Av.Av.AD", "Total.Av.Av.AD", "Total.Av.AD.of.Line")
+  # lineages_new <- as.data.frame(lineages_new)
+  # colnames(lineages_new) <- c()
   
-  lineages_new <- lineages_new[order(lineages_new$Max.Total.Ratio, decreasing = T),]
+  lineages_new = data.table::rbindlist(lineages_new)
   
-  row.names(lineages_new) <- c(1:dim(lineages_new)[1])
+  lineages_new <- lineages_new[order(lineages_new$Max.Total.Ratio, decreasing = TRUE),]
+  
+  # row.names(lineages_new) <- 1:nrow(lineages_new)
   
   return(lineages_new)
   
