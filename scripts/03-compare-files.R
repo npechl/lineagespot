@@ -8,7 +8,7 @@ input.folder <- "Data/L1"
 files <- list.files(path = input.folder,pattern = "tsv")
 
 #create output folder
-outputs <- "Outputs_L1"
+outputs <- "Outputs_compared"
 dir.create(outputs)
 
 files.list <- list()
@@ -39,9 +39,9 @@ stats.table <- data.table(files = character(),
                           num.differences = numeric(),
                           max.abs.tree.dif = numeric(),
                           max.abs.total.dif = numeric())
-#data.graphs <- list()
-#names.list <- c()
-#k <- 1
+data.graphs <- list()
+names.list <- c()
+k <- 1
 for (i in iter[1:length(iter)-1]){
   for (j in seq((i+2),(2*num.files+2),2)){
    
@@ -60,9 +60,9 @@ for (i in iter[1:length(iter)-1]){
     abs.total.dif <- abs(total[,i+1]-total[,j+1])
     
     one.table <- cbind(one.table,abs.tree.dif ,abs.total.dif )
-    #data.graphs[[k]] <- one.table
-    #names.list <- c(names.list,paste0(filename1,"_",filename2))
-    #k <-k+1
+    data.graphs[[k]] <- one.table
+    names.list <- c(names.list,paste0(filename1,"_",filename2))
+    k <-k+1
     one.table <- one.table[which(one.table[,9] != 0),]
     colnames(one.table) <- c(colnames(total)[c(1:3,i, i+1, j, j+1)],
                              abs.tree.name ,abs.total.name)
@@ -85,9 +85,9 @@ for (i in iter[1:length(iter)-1]){
 }
 
 write.table(stats.table,paste0(outputs,"/info for all the diffeneces.csv"), sep = "\t", row.names = F)
-#names(data.graphs) <- names.list
+names(data.graphs) <- names.list
 
-#names(files.list) <- files
+names(files.list) <- files
 
 #table <- matrix(nrow = length(files), ncol = length(files))
 #dimnames(table) <- list(files, files)
