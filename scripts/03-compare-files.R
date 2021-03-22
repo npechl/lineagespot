@@ -3,7 +3,7 @@ library(data.table)
 library(stringr)
 
 #the path of the folder with all the files to be compared
-input.folder <- "Data/L1"
+input.folder <- "compare"
 
 files <- list.files(path = input.folder,pattern = "tsv")
 

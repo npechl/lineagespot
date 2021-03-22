@@ -15,11 +15,11 @@ bases = base::c("A", "G", "C", "T", "-")
 
 reference.path = "ref/NC_045512.fasta"
 
-vcf.path = "vcf-files/Sewage-L2_S10_L001_freebayes.vcf"
+vcf.path = "vcf-files/Sewage_CoV19_L3_S1_s500_freebayes.vcf"
 
 decision.rules.path = "ref/decision_tree_rules.txt"
 
-nreads = 69706
+nreads = 490549
 
 
 utils::download.file(
@@ -284,6 +284,9 @@ ref$dp = fix[who, ]$dp
 ref[which(is.na(ref$dp)), ]$ad = 0 
 ref[which(is.na(ref$dp)), ]$dp = 0 
 
+ref$source = "ref"
+fix$source = "var"
+
 fix = base::rbind(ref, fix)
 
 fix$pos = base::as.numeric(fix$pos)
@@ -304,6 +307,7 @@ one.run = function(x, bases) {
   
   out$ad = x[5]
   out$dp = x[6]
+  out$source = x[7]
   
   base::return(out)
 }
@@ -424,65 +428,104 @@ for(i in 1:(base::ncol(rules))) {
 
 out = data.table::rbindlist(out)
  
-one.run = function(x, expr, AD, DP) {
+one.run = function(x, expr, AD, DP, source) {
   
   rules = stringr::str_split(x[2], ",", simplify = TRUE)
   rules = as.vector(rules)
 
-  tree.who = base::which(expr %in% rules[1:as.integer(x[3])])
+  tree.who = base::which(expr %in% rules[0:as.integer(x[3])])
   total.who = base::which(expr %in% rules)
+  
+  total.who.var = base::which(expr[which(source == "var")] %in% rules)
   
   tree.AD = AD[tree.who]
   tree.AD = tree.AD[which(tree.AD != 0)]
   
   total.AD = AD[total.who]
   total.AD = total.AD[which(total.AD != 0)]
+  
+  total.DP = DP[total.who]
+  total.DP = total.DP[which(total.DP != 0)]
 
+  expr.var = unique(expr[total.who.var])
   expr = unique(expr[total.who])
+  
 
 
   stats = data.table::data.table(total.overlap = base::length(expr),
+                                 total.overlap.var = base::length(expr.var),
                                  total.len = base::length(rules),
                                  tree.avg.ad = base::mean(tree.AD),
-                                 total.avg.ad = base::mean(total.AD))
+                                 total.avg.ad = base::mean(total.AD),
+                                 total.avg.dp = base::mean(total.DP),
+                                 total.sum.ad = base::sum(total.AD),
+                                 total.sum.dp = base::sum(total.DP))
 
   base::return(stats)
 
 }
 
-rules.stats = base::apply(out, 1, one.run, comp$whole.expr, comp$ad, comp$dp)
+rules.stats = base::apply(out, 1, one.run, comp$whole.expr, comp$ad, comp$dp, comp$source)
 rules.stats = data.table::rbindlist(rules.stats)
 
 # Generate output ----------------------------------
 
 out$total.overlap = rules.stats$total.overlap
+out$total.overlap.var = rules.stats$total.overlap.var
 out$total = rules.stats$total.len
 out$tree.avg.ad = rules.stats$tree.avg.ad
 out$total.avg.ad = rules.stats$total.avg.ad
+out$total.avg.dp = rules.stats$total.avg.dp
+out$total.sum.ad = rules.stats$total.sum.ad
+out$total.sum.dp = rules.stats$total.sum.dp
 
 out$tree.ratio = out$tree.overlap / out$total
 out$total.ratio = out$total.overlap / out$total
+out$total.ratio.var = out$total.overlap.var / out$total
 
 out$avg.dp = Avg.DP
 out$total.run.reads = nreads
 
 out[which(is.na(out$tree.avg.ad)), ]$tree.avg.ad = 0
 out[which(is.na(out$total.avg.ad)), ]$total.avg.ad = 0
+out[which(is.na(out$total.avg.dp)), ]$total.avg.dp = 0
+out[which(is.na(out$total.sum.ad)), ]$total.sum.ad = 0
+out[which(is.na(out$total.sum.dp)), ]$total.sum.dp = 0
 
 out = out[base::order(out$tree.ratio, out$total.ratio, decreasing = TRUE), ]
 
 base::colnames(out) = base::c("Lineage", "Rules", 
-                              "Tree.Overlap", "Total.Overlap", "Total",
-                              "Tree.Avg.AD", "Total.Avg.AD", 
-                              "Tree.Ratio", "Total.Ratio",
+                              "Tree.Overlap", "Total.Overlap", "Total.Overlap.Var", "Total",
+                              "Tree.Avg.AD", "Total.Avg.AD", "Total.Avg.DP",
+                              "Total.Sum.AD", "Total.Sum.DP",
+                              "Tree.Ratio", "Total.Ratio", "Total.Ratio.Var",
                               "Avg.DP", "Total.Run.Reads")
 
-out = out[,c("Lineage", "Rules", "Total", "Tree.Overlap", "Total.Overlap", "Tree.Ratio", "Total.Ratio", "Tree.Avg.AD", "Total.Avg.AD", "Avg.DP", "Total.Run.Reads")]
+out = out[,c("Lineage", 
+             "Rules", 
+             "Total", 
+             "Tree.Overlap", 
+             "Total.Overlap", 
+             "Total.Overlap.Var",
+             "Tree.Ratio", 
+             "Total.Ratio", 
+             "Total.Ratio.Var",
+             "Tree.Avg.AD", 
+             "Total.Avg.AD", 
+             "Total.Avg.DP",
+             "Total.Sum.AD", 
+             "Total.Sum.DP",
+             "Avg.DP", 
+             "Total.Run.Reads")]
+
+out$Sig = out$Total.Sum.AD / out$Total.Sum.DP
+
+out[which(is.na(out$Sig)), ]$Sig = 0
 
 end.time = base::Sys.time()
 
 utils::write.table(out, 
-                   paste(stringr::str_replace(vcf.path, ".vcf", "-lineagespot-v2.tsv"), sep = ""), 
+                   paste(stringr::str_replace(vcf.path, ".vcf", "-lineagespot.tsv"), sep = ""), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
