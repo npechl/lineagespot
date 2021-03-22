@@ -11,8 +11,8 @@ The following [CRAN](https://cran.r-project.org/) packages need to be installed 
 ```
 install.packages(c("data.table", 
                    "stringr", 
-                   "readr, 
-                   "stringdist, 
+                   "readr", 
+                   "stringdist", 
                    "seqinr", 
                    "vcfR", 
                    "openxlsx"))
