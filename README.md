@@ -31,7 +31,7 @@ git clone https://github.com/BiodataAnalysisGroup/lineagespot.git
 The project consists of three main scripts:
 
 - `01-find-lineages-v3.R`
-- `02-map.R`
+- `02-collapse.R`
 - `03-compare-files.R`
 
 ### Inputs
@@ -42,15 +42,13 @@ The project consists of three main scripts:
     - `decision.rules.path`: Path of the Pangolin decision rules file (by default this file is downloaded to the given path).
     - `nreads`: Number of total reads.
 
-- `02-map.R`:
-    - `total_ratio_threshold`: Total ratio minimum threshold.
-    - `tree_ratio_threshold`: Tree ratio minimum threshold.
-    - `analysis_output_folder`: Path to output folder.
+- `02-collapse.R`:
     - `analysis_output_filename`: Input file path.
-    - `samples_detected_filepath`: Path to XLSX file with relevant samples to be compared.
 
 - `03-compare-files.R` (optional):
     - `input.folder`: Path to folder with multiple Lineagespot output files, that need to be compared
+
+*before running the ```03-compare-files.R``` script, make sure you have run the ```01-find-lineages-v3.R``` script for all the different vcf files.
 
 ### Outputs
 

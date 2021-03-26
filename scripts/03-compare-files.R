@@ -3,12 +3,13 @@ library(data.table)
 library(stringr)
 
 #the path of the folder with all the files to be compared
-input.folder <- "compare"
+input.folder <- "vcf-files"
 
 files <- list.files(path = input.folder,pattern = "tsv")
+files <- files[-which(str_detect(files,"collapsed"))]
 
 #create output folder
-outputs <- "Outputs_compared"
+outputs <- "vcf-files/Outputs_compared"
 dir.create(outputs)
 
 files.list <- list()
@@ -88,17 +89,4 @@ write.table(stats.table,paste0(outputs,"/info for all the diffeneces.csv"), sep 
 names(data.graphs) <- names.list
 
 names(files.list) <- files
-
-#table <- matrix(nrow = length(files), ncol = length(files))
-#dimnames(table) <- list(files, files)
-
-#for (i in c(1:ncol(table))){
-#  for (j in c(i:ncol(table))){
-#    
-#    table[j,i] <- identical(files.list[[i]][,c("Tree.Overlap", "Total.Overlap")], files.list[[j]][,c("Tree.Overlap", "Total.Overlap")])
-#    
-#  }
-#}
-
-#write.table(table, paste0(outputs,"/check_identical_files.txt"), sep = "\t", row.names = T)
 

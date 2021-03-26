@@ -1,10 +1,10 @@
 # Libraries needed ----------------------------------
 
-# library(vcfR)
-# library(data.table)
-# library(stringr)
-# library(seqinr)
-# library(stringdist)
+library(vcfR)
+library(data.table)
+library(stringr)
+library(seqinr)
+library(stringdist)
 
 base::rm(list = ls())
 
@@ -15,7 +15,7 @@ bases = base::c("A", "G", "C", "T", "-")
 
 reference.path = "ref/NC_045512.fasta"
 
-vcf.path = "vcf-files/Sewage_CoV19_L3_S1_s500_freebayes.vcf"
+vcf.path = "vcf-files/Sewage-L2_S10_L001_freebayes.ann.vcf"
 
 decision.rules.path = "ref/decision_tree_rules.txt"
 
