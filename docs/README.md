@@ -70,3 +70,36 @@ The workflow consists of three R scripts:
     - `Mean Tree Av DP`: The mean value of Tree AV. DP values from all rules that end up to a specific lineage in table 1. In our case, it is a column of zeros, but it strictly depends on data.
     - `Mean Total Av DP`: The mean value of Total AV. DP values from all rules that end up to a specific lineage in table 1.
 
+
+## Working example
+
+Given that this GH repo has been downloaded as is, you can run the example dataset as follows:
+
+```R
+
+# You can update the script to work with your own data, by changing accordingly the following lines
+#
+# reference.path (line 14)
+# vcf.path (line 16)
+# decision.rules.path (line 20)
+# nreads (line 22)
+# 
+
+source("01-find-lineages-v3.R")
+
+# You can update the script to work with your own data, by changing accordingly the following lines:
+#
+# analysis_output_file.path (line 9)
+# 
+
+source("02-collapse.R")
+
+# You can update the script to work with your own data, by changing accordingly the following lines:
+#
+# input.folder (line 6)
+# outputs (line 12)
+# 
+
+source("03-compare-files.R")
+```
+
