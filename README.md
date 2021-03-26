@@ -66,7 +66,7 @@ Two output files are produced by the Lineagespot:
 
 #### A collapsed table:
 
-|Lineage |Max Tree Ratio |Max Total Ratio |Max Tree Av. AD |Max Total Av. AD |Average of Tree Av. AD |Average of Total Av. AD |
+|Lineage |Mean Tree Ratio |Mean Total Ratio |Mean Total Ratio Var |Mean Tree Av. DP |Mean total Av. DP|
 | ------ | ------------- | -------------- | -------------- | --------------- | --------------------- | ---------------------- | 
 |B.1.177.17 |1 |1 |7 |7 |7 |7 |
 |B.1.177 |1 |1 |7 |10 |1.01 |5.56 |
