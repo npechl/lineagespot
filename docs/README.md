@@ -30,7 +30,7 @@ The workflow consists of three R scripts:
     1. **Output folder**: Same as input folder, in our case `vcf-files` directory.
     2. **Output file**: A single `.tsv` file having the same main name as input file, with a suffix `-collapsed.tsv` at the end. For example, if the input file is `sample_freebayes.ann-lineagespot.tsv`, the output file will be `sample_freebayes.ann-lineagespot-collapsed.tsv`.
 
-- `03-compare-files.R`: This script is responsible for comparing the multiple results coming from the `01-find-lineages-v3.R` script. Practically, it compares the TSV tables and detects differences. It's useful when dealing with VCF files occured from different analysis methodologies, or VCF files from the same analysis method but from different samples (in that way we can compare samples within a time period and observe how specific mutations variate over time).
+- `03-compare-files.R`: This script is responsible for comparing the multiple results coming from the `01-find-lineages-v3.R` script. Practically, it compares the TSV tables and detects differences. It's useful when dealing with VCF files occured from different analysis methodologies, or VCF files from the same analysis method but from different samples (in that way different samples within a time period can be compared and in order to observe how specific mutations variate over time).
 
   - **input**: A set of TSV files occured as outputs from the `01-find-lineages-v3.R` script.
 
@@ -51,20 +51,22 @@ The workflow consists of three R scripts:
     - `Lineage`: The lineage derived from this specific rule.
     - `Rules`: The corresponding rules
     - `Total`: Number of sub-rules in a rule (Basically, every rule corresponds to a single path in Pangoline's Decision Tree, so it definitely consists of sub-rules at every decision node).
-    - `Tree Overlap`: Number of sub-rules that are met in our data, if we examine them serially.
-    - `Total Overlap`: Number of sub-rules that are met in our data, if we don't examine them serially, but as a general set.
-    - `Tree Ratio`, `Total Ratio`: The corresponding ratios, that lie within [0,1]. For example, if the number of sub-rules is 5 and four of them are verified (non-serially), the total ratio is `0.8`.
+    - `Tree Overlap`: Overlapping (pangolin's) sub-rules, by examing them serially.
+    - `Total Overlap`: Overlapping (pangolin's) sub-rules, by examing them as a general set.
+    - `Total Overlap Var`: Overlapping (pangolin's) sub-rules, by examing them as a general set and taking into account only the rules created by the identified variants.
+    - `Tree Ratio`, `Total Ratio`, `Total Ratio Var`: The corresponding ratios, that lie within [0,1]. For example, if the number of sub-rules is 5 and four of them are verified (non-serially), the total ratio is `0.8`.
     - `Tree Av. DP`: The average value of DP in the positions of the sub-rules that are verified in our data, in a serial way (Tree-way).
     - `Total Av. DP`: The average value of DP in the positions of the sub-rules that are verified in our data, in a non-serial way (Total sub-rules).
     - `Av. DP`: The average value of DP parameter in our sample.
+    - `Total Sum AD`, `Total Sum DP`: Sum of total AD and DP values of the total overlaping rules (`Total Overlap`).
     - `Number of reads`: The number of reads in our sample.
-    - `Sig`: Significance, indicates at which rate we find the lineage.
+    - `Sig`: A ratio of `Total Sum AD` devided by `Total Sum DP`.
 
 4. In contrast, the columns in table 2 are:
     - `Lineage`: The lineage
     - `Mean Tree Ratio`: The mean value of the Tree ratio column from all rules that end up to a specific lineage in table 1.
     - `Mean Total Ratio`: The mean value of the Total ratio column from all rules that end up to a specific lineage in table 1.
-    - `Mean Total Ratio Var`: The of Total Ratio values from all rules that end up to a specific lineage in table 1.
+    - `Mean Total Ratio Var`: The mean value of Total Ratio values from all rules that end up to a specific lineage in table 1.
     - `Mean Tree Av DP`: The mean value of Tree AV. DP values from all rules that end up to a specific lineage in table 1. In our case, it is a column of zeros, but it strictly depends on data.
     - `Mean Total Av DP`: The mean value of Total AV. DP values from all rules that end up to a specific lineage in table 1.
 
