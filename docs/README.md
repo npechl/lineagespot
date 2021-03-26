@@ -85,7 +85,7 @@ Given that this GH repo has been downloaded as is, you can run the example datas
 # nreads (line 22)
 # 
 
-source("01-find-lineages-v3.R")
+source("01-find-lineages.R")
 
 # You can update the script to work with your own data, by changing accordingly the following lines:
 #

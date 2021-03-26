@@ -11,9 +11,9 @@ Sewage_CoV19_L3_S1_L001_sorted_uniq.bam \
 
 freebayes \
 -f /work/nikospech/SARS-CoV-2/ref/NC_045512.fasta \
--F 0.01 \
+-F 0.5 \
 -C 1 \
---pooled-continuous Sewage_CoV19_L3_S1_s100_sorted_uniq.bam > Sewage_CoV19_L3_S1_s100_freebayes.vcf
+--pooled-continuous CoV19_L1_S1_sorted_uniq.bam > CoV19_L1_S1_freebayes_50.vcf
 
 
 
@@ -36,6 +36,4 @@ samtools index Sewage_CoV19_L3_S1_L001_sorted_uniq_rg.bam
 
 source activate covid19
 
-snpEff ann /work/nikospech/SARS-CoV-2/ref/NC_045512.fasta Sewage_CoV19_L3_S1_L001_freebayes.vcf > Sewage_CoV19_L3_S1_L001_freebayes.ann.vcf
-snpEff ann NC_045512.2 /work/nikospech/SARS-CoV-2/ref/NC_045512.fasta Sewage_CoV19_L3_S1_L001_freebayes.vcf > Sewage_CoV19_L3_S1_L001_freebayes.ann.vcf
-snpEff ann /work/nikospech/SARS-CoV-2/ref/NC_045512 Sewage_CoV19_L3_S1_L001_freebayes.vcf > Sewage_CoV19_L3_S1_L001_freebayes.ann.vcf
+snpEff ann NC_045512.2 CoV19_L1_S1_freebayes_10.vcf > CoV19_L1_S1_freebayes_10_ann.vcf
