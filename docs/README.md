@@ -33,22 +33,22 @@ As menttioned on the main Readme of the project, the workflow consists of three 
 1. Each row in table 1 corresponds to a single rule in Pangoline's Decision Tree, meaning that it contains the majority of lineages more than once.
 2. In contrast, table 2 contains all lineages once. Table 2 occurs from merging rules that end up to the same lineage in a single row.
 3. Most significant columns in table 1 are:
- - `Lineage`: The lineage derived from this specific rule.
- - `Rules`: The corresponding rules
- - `Total`: Number of sub-rules in a rule (Basically, every rule corresponds to a single path in Pangoline's Decision Tree, so it definitely consists of sub-rules at every decision node).
- - `Tree Overlap`: Number of sub-rules that are met in our data, if we examine them serially.
- - `Total Overlap`: Number of sub-rules that are met in our data, if we don't examine them serially, but as a general set.
- - `Tree Ratio`, `Total Ratio`: The corresponding ratios, that lie within [0,1]. For example, if the number of sub-rules is 5 and four of them are verified (non-serially), the total ratio is `0.8`.
- - `Tree Av. DP`: The average value of DP in the positions of the sub-rules that are verified in our data, in a serial way (Tree-way).
- - `Total Av. DP`: The average value of DP in the positions of the sub-rules that are verified in our data, in a non-serial way (Total sub-rules).
- - `Av. DP`: The average value of DP parameter in our sample.
- - `Number of reads`: The number of reads in our sample.
- - `Sig`: Significance, indicates at which rate we find the lineage.
+  - `Lineage`: The lineage derived from this specific rule.
+  - `Rules`: The corresponding rules
+  - `Total`: Number of sub-rules in a rule (Basically, every rule corresponds to a single path in Pangoline's Decision Tree, so it definitely consists of sub-rules at every decision node).
+  - `Tree Overlap`: Number of sub-rules that are met in our data, if we examine them serially.
+  - `Total Overlap`: Number of sub-rules that are met in our data, if we don't examine them serially, but as a general set.
+  - `Tree Ratio`, `Total Ratio`: The corresponding ratios, that lie within [0,1]. For example, if the number of sub-rules is 5 and four of them are verified (non-serially), the total ratio is `0.8`.
+  - `Tree Av. DP`: The average value of DP in the positions of the sub-rules that are verified in our data, in a serial way (Tree-way).
+  - `Total Av. DP`: The average value of DP in the positions of the sub-rules that are verified in our data, in a non-serial way (Total sub-rules).
+  - `Av. DP`: The average value of DP parameter in our sample.
+  - `Number of reads`: The number of reads in our sample.
+  - `Sig`: Significance, indicates at which rate we find the lineage.
 4. In contrast, the columns in table 2 are:
- - `Lineage`: The lineage
- - `Mean Tree Ratio`: The mean value of the Tree ratio column from all rules that end up to a specific lineage in table 1.
- - `Mean Total Ratio`: The mean value of the Total ratio column from all rules that end up to a specific lineage in table 1.
- - `Mean Total Ratio Var`: The variance of Total Ratio values from all rules that end up to a specific lineage in table 1.
- - `Mean Tree Av DP`: The mean value of Tree AV. DP values from all rules that end up to a specific lineage in table 1. In our case, it is a column of zeros, but it strictly depends on data.
- - `Mean Total Av DP`: The mean value of Total AV. DP values from all rules that end up to a specific lineage in table 1.
+  - `Lineage`: The lineage
+  - `Mean Tree Ratio`: The mean value of the Tree ratio column from all rules that end up to a specific lineage in table 1.
+  - `Mean Total Ratio`: The mean value of the Total ratio column from all rules that end up to a specific lineage in table 1.
+  - `Mean Total Ratio Var`: The variance of Total Ratio values from all rules that end up to a specific lineage in table 1.
+  - `Mean Tree Av DP`: The mean value of Tree AV. DP values from all rules that end up to a specific lineage in table 1. In our case, it is a column of zeros, but it strictly depends on data.
+  - `Mean Total Av DP`: The mean value of Total AV. DP values from all rules that end up to a specific lineage in table 1.
 
