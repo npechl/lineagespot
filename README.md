@@ -62,8 +62,6 @@ Two output files are produced by the Lineagespot:
 |B.1.177 |28931!='A',... |5 |5 |5 |1 |1 |1 |1 |21.3780 |69706 |
 |B.1.177 |28931!='A',... |6 |4 |4 |0.66 |0.66 |1 |1 |21.3780 |69706 |
 
-
-
 #### A collapsed table:
 
 |Lineage |Mean Tree Ratio |Mean Total Ratio |Mean Total Ratio Var |Mean Tree Av. DP |Mean total Av. DP|
@@ -74,3 +72,13 @@ Two output files are produced by the Lineagespot:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Citation
+
+If you use the tool, please cite the following work:
+
+Nikolaos Pechlivanis, Maria Tsagiopoulou, Maria Christina Maniou, Anastasis Togkousidis, Evangelia Mouchtaropoulou, Taxiarchis Chassalevris, Serafeim Chaintoutis, Chrysostomos Dovas, Maria Petala, Margaritis Kostoglou, Thodoris Karapantsios, Stamatia Laidou, Elisavet Vlachonikola, Anastasia Chatzidimitriou, Agis Papadopoulos, Nikolaos Papaioannou, Anagnostis Argiriou, Fotis Psomopoulos, "_Detecting SARS-CoV-2 lineages and mutational load in municipal wastewater; a use-case in the metropolitan area of Thessaloniki, Greece_", medRxiv 2021.03.17.21252673; doi: [https://doi.org/10.1101/2021.03.17.21252673](https://doi.org/10.1101/2021.03.17.21252673)
+
+
+
+
