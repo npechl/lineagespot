@@ -5,6 +5,7 @@ library(data.table)
 library(stringr)
 library(seqinr)
 library(stringdist)
+library(tools)
 
 base::rm(list = ls())
 
@@ -525,7 +526,7 @@ out[which(is.na(out$Sig)), ]$Sig = 0
 end.time = base::Sys.time()
 
 utils::write.table(out, 
-                   paste(stringr::str_replace(vcf.path, ".vcf", "-lineagespot.tsv"), sep = ""), 
+                   paste0(tools::file_path_sans_ext(vcf.path), "-lineagespot.tsv"), 
                    row.names = FALSE, 
                    quote = FALSE, 
                    sep = "\t")
