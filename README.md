@@ -42,6 +42,8 @@ The project consists of three main scripts:
     - `decision.rules.path`: Path of the Pangolin decision rules file (by default this file is downloaded to the given path).
     - `nreads`: Number of total reads.
 
+**It should be noted that the first script applys on VCF files which contain FORMAT or sample-specific information. Examples of this kind of format can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format) or [here](https://hbctraining.github.io/In-depth-NGS-Data-Analysis-Course/sessionVI/lessons/02_variant-calling.html).**
+
 - `02-collapse.R`:
     - `analysis_output_filename`: Input file path.
 
