@@ -71,6 +71,10 @@ Two output files are produced by the Lineagespot:
 |B.1.177.17 |1 |1 |7 |7 |7 |
 |B.1.177 |1 |1 |7 |10 |1.01 |
 
+## Raw data analysis
+
+The processing steps of the raw fastq files can be found [here](docs/raw-data-analysis.md).
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
