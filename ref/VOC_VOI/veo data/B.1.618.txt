@@ -1,0 +1,3 @@
+del:S:Y145_H146del
+aa:S:E484K
+aa:S:D614G

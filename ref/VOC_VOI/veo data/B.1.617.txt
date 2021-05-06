@@ -1,0 +1,8 @@
+aa:S:T95I
+aa:S:G142D
+aa:S:E154K
+aa:S:L452R
+aa:S:E484Q
+aa:S:D614G
+aa:S:P681R
+aa:S:Q1071H

@@ -1,0 +1,10 @@
+aa:S:H66D
+aa:S:G142V
+del:S:Y145del
+aa:S:D215G
+aa:S:V483A
+aa:S:D614G
+aa:S:H655Y
+aa:S:G669S
+aa:S:Q949R
+aa:S:N1187D

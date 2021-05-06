@@ -1,0 +1,6 @@
+aa:S:P9L
+aa:S:I210V
+del:S:S256_W258del
+aa:S:V445A
+aa:S:E484K
+aa:S:D614G

@@ -1,0 +1,8 @@
+aa:S:L18F
+aa:S:L452R
+aa:S:N501Y
+aa:S:A653V
+aa:S:H655Y
+aa:S:Q677H
+aa:S:D796Y
+aa:S:G1219V

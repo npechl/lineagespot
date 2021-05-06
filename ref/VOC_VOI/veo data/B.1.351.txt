@@ -1,0 +1,9 @@
+aa:S:D80A
+del:S:L242_L244del
+aa:S:R246I
+aa:S:K417N
+aa:S:E484K
+aa:S:N501Y
+aa:S:D614G
+aa:S:A701V
+aa:S:A892V

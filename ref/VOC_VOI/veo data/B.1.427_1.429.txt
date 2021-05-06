@@ -1,0 +1,5 @@
+aa:S:S13I
+aa:S:P26S
+aa:S:W152C
+aa:S:L452R
+aa:S:D614G

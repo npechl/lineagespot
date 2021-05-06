@@ -1,0 +1,13 @@
+aa:S:L18F
+aa:S:T20N
+aa:S:P26S
+aa:S:D138Y
+aa:S:R190S
+aa:S:K417T
+aa:S:E484K
+aa:S:N501Y
+aa:S:D614G
+aa:S:H655Y
+aa:S:E780D
+aa:S:T1027I
+aa:S:V1176F

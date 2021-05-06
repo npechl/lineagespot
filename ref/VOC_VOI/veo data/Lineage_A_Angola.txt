@@ -1,0 +1,11 @@
+aa:S:D80Y
+del:S:Y145del
+del:S:I210del
+aa:S:D215G
+aa:S:W258L
+aa:S:R346K
+aa:S:T478R
+aa:S:E484K
+aa:S:H655Y
+aa:S:P681H
+aa:S:Q957H

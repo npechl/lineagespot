@@ -1,0 +1,9 @@
+del:S:H69_V70del
+del:S:Y145del
+aa:S:N501Y
+aa:S:A570D
+aa:S:D614G
+aa:S:P681H
+aa:S:T716I
+aa:S:S982A
+aa:S:D1118H

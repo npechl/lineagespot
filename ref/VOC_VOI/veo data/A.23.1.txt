@@ -1,0 +1,6 @@
+aa:S:L141F
+aa:S:F157L
+aa:S:V367F
+aa:S:Q613H
+aa:S:P681R
+aa:S:I1179V

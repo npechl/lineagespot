@@ -1,0 +1,10 @@
+del:S:L141_V143del
+del:S:A243_L244del
+aa:S:V320D
+aa:S:E484K
+aa:S:N501Y
+aa:S:D614G
+aa:S:P681H
+aa:S:E1092K
+aa:S:H1101Y
+aa:S:V1176F
