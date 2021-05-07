@@ -40,8 +40,8 @@ rm(meta_data, meta_file)
 
 # Read VOC and VOI files ------------
 
-mutations_source <- "outbreak_info"  # "veo" #or  "pangolin"  
-specific_fp <- "outbreak_info/outbreakinfo_mutation_report_data_b.1.1.7.tsv"
+mutations_source <-  "pangolin"   # "veo" #or  "outbreak_info" 
+specific_fp <- "pangolin data/b.1.351_pangolin.txt"
 
 # Read amino acid abbreviations file -------------
 
@@ -301,7 +301,14 @@ positions <- str_remove_all(positions, paste(aa_abbreviations$Three_Letter, coll
 positions <- str_remove_all(positions, "p.|del|\\*| ")
 
 genes <- unlist(str_split(new_annotations$mutation, ":"))
-genes <- genes[c(T, F)]
+
+if (mutations_source == "outbreak_info"){
+  genes <- genes[c(T, F)]
+} else if (mutations_source == "pangolin") {
+  genes <- genes[c(F,T,F)]
+  genes <- toupper(genes)
+  
+}
 
 pos_table <- data.table(gene = genes,
                         positions = positions,
@@ -337,7 +344,12 @@ gene_annot$end <- as.numeric(gene_annot$end)
 
 pos_table$new_start <- NA
 pos_table$new_end <- NA
-pos_table$gene <- str_replace_all(pos_table$gene, "ORF1A|ORF1B", "ORF1AB")
+
+
+if (mutations_source == "outbreak_info") {
+  pos_table$gene <- str_replace_all(pos_table$gene, "ORF1A|ORF1B", "ORF1AB")
+}
+
 
 for (i in c(1:nrow(pos_table))) {
   
@@ -347,6 +359,17 @@ for (i in c(1:nrow(pos_table))) {
 }
 
 rm(gene_row)
+
+if (mutations_source == "pangolin") {
+  
+  who_del <- which(str_detect(new_annotations$mutation, "del"))
+  pos_table$new_start[who_del] <- as.numeric(pos_table$gene[who_del])
+  temp <- unlist(str_split(new_annotations$mutation[who_del], ":"))[c(F,F,T)]
+  pos_table$new_end[who_del] <- as.numeric(pos_table$gene[who_del]) + as.numeric(temp)
+  new_annotations$names <- new_annotations$mutation
+  
+}
+
 
 pos_table$names <- new_annotations$names
 who_del <- which(str_detect(new_annotations$names, "del"))
@@ -370,25 +393,25 @@ who_aa <- which(str_detect(new_annotations$names, "del", negate = TRUE))
 heat_coverage[who_aa, ] <- round(heat_coverage[who_aa, ] / 3)
 rm(who_aa)
 
-extra = rowAnnotation(variants = anno_text(new_annotations$annot, location = 0.5, just = "center",
-                                           gp = gpar(fontsize = 11, fill = "#DCE5F3", col = "black", border = "white"),
-                                           max_text_width(new_annotations$annot) *1.3) ,
-                      Gene_name = anno_text(new_annotations$genes,
-                                            location = 0.5, just = "center",
-                                            gp = gpar(fontsize = 11, fill = "#F5CDF7", col = "black", border = "white"),
-                                            max_text_width(new_annotations$genes) *1.3),
-                      HGVS.c = anno_text(new_annotations$HGVS.c,
-                                         location = 0.5, just = "center",
-                                         gp = gpar(fontsize = 11, fill = "#D3F7CD", col = "black", border = "white"),
-                                         max_text_width(new_annotations$HGVS.c) *1.3),
-                      HGVS.p = anno_text(new_annotations$HGVS.p,
-                                         location = 0.5, just = "center",
-                                         gp = gpar(fontsize = 11, fill = "#F8E5A6", col = "black", border = "white"),
-                                         max_text_width(new_annotations$HGVS.p) *1.3),
-                      pos = anno_text(new_annotations$POS,
-                                      location = 0.5, just = "center",
-                                      gp = gpar(fontsize = 11, fill = "#ffe0c0", col = "black", border = "white"),
-                                      width = max_text_width(new_annotations$POS)),
+extra = rowAnnotation( #variants = anno_text(new_annotations$annot, location = 0.5, just = "center",
+#                                            gp = gpar(fontsize = 11, fill = "#DCE5F3", col = "black", border = "white"),
+#                                            max_text_width(new_annotations$annot) *1.3) ,
+#                       Gene_name = anno_text(new_annotations$genes,
+#                                             location = 0.5, just = "center",
+#                                             gp = gpar(fontsize = 11, fill = "#F5CDF7", col = "black", border = "white"),
+#                                             max_text_width(new_annotations$genes) *1.3),
+#                       HGVS.c = anno_text(new_annotations$HGVS.c,
+#                                          location = 0.5, just = "center",
+#                                          gp = gpar(fontsize = 11, fill = "#D3F7CD", col = "black", border = "white"),
+#                                          max_text_width(new_annotations$HGVS.c) *1.3),
+#                       HGVS.p = anno_text(new_annotations$HGVS.p,
+#                                          location = 0.5, just = "center",
+#                                          gp = gpar(fontsize = 11, fill = "#F8E5A6", col = "black", border = "white"),
+#                                          max_text_width(new_annotations$HGVS.p) *1.3),
+#                       pos = anno_text(new_annotations$POS,
+#                                       location = 0.5, just = "center",
+#                                       gp = gpar(fontsize = 11, fill = "#ffe0c0", col = "black", border = "white"),
+#                                       width = max_text_width(new_annotations$POS)),
                       label = anno_text(new_annotations$mutation,
                                         location = 0.5, just = "center",
                                         gp = gpar(fontsize = 11, fill = "white", col = "black", border = "white"),
@@ -397,7 +420,7 @@ extra = rowAnnotation(variants = anno_text(new_annotations$annot, location = 0.5
 
 graph3 <-Heatmap(heat_matrix, name = "frequency", 
                  col = col_fun,
-                 heatmap_width = unit(43, "cm"), heatmap_height = unit(nrow(heat_matrix) +3, "cm"),
+                 heatmap_width = unit(23, "cm"), heatmap_height = unit(nrow(heat_matrix) + 11, "cm"),
                  border = T,
                  #border_gp = gpar(col = "grey"),
                  rect_gp = gpar(col = "white", lwd = 1),
@@ -425,8 +448,8 @@ graph3 <-Heatmap(heat_matrix, name = "frequency",
  
  
 save_image(print(graph3),
-           paste0(plots_folder, "/coverage_",specific_fp,".png"), 
-           width = 20, height = 10, res = 100)
+           paste0(plots_folder, "/coverage_1",specific_fp,".png"), 
+           width = 12, height = 10, res = 300)
 
 colnames(heat_coverage) <- paste0("Coverage_", timepoints$samples)
 output_table <- cbind(heat_coverage, heat_matrix, new_annotations[, 1:6])
