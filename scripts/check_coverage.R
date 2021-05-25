@@ -24,7 +24,7 @@ rm(coverage_file)
 
 # Read sewage data ---------------
 
-sewage_file <- "new files/sars-sewage.csv"
+sewage_file <- "new files/sewage_VCFList.csv"
 input_data <- read.csv(sewage_file)
 rm(sewage_file)
 
@@ -41,7 +41,7 @@ rm(meta_data, meta_file)
 # Read VOC and VOI files ------------
 
 mutations_source <-  "pangolin"   # "veo" #or  "outbreak_info" 
-specific_fp <- "pangolin data/b.1.351_pangolin.txt"
+specific_fp <- "pangolin data/b.1.1.7_pangolin.txt"
 
 # Read amino acid abbreviations file -------------
 
@@ -51,7 +51,7 @@ rm(amino_acids)
 
 # Create output folder ---------------
 
-plots_folder <- "new sars/new samples/coverage"
+plots_folder <- "new sars/samples_24_5/coverage"
 dir.create(plots_folder)
 
 # Read gene coordinates -------------
@@ -63,7 +63,7 @@ rm(gene_coordinates)
 # Create heatmaps ------------------------
 
 input_data <- input_data[which(input_data$ID != ""), ]
-col_fun = colorRamp2(c( 0,1), c("#FFF6FF", "red"))
+col_fun = colorRamp2(c( 0,1), c("#FFF6FF", "#BC3C29FF"))
 
 if (mutations_source == "outbreak_info"){
   
@@ -420,7 +420,7 @@ extra = rowAnnotation( #variants = anno_text(new_annotations$annot, location = 0
 
 graph3 <-Heatmap(heat_matrix, name = "frequency", 
                  col = col_fun,
-                 heatmap_width = unit(23, "cm"), heatmap_height = unit(nrow(heat_matrix) + 11, "cm"),
+                 heatmap_width = unit(27, "cm"), heatmap_height = unit(27, "cm"),
                  border = T,
                  #border_gp = gpar(col = "grey"),
                  rect_gp = gpar(col = "white", lwd = 1),
@@ -448,8 +448,12 @@ graph3 <-Heatmap(heat_matrix, name = "frequency",
  
  
 save_image(print(graph3),
-           paste0(plots_folder, "/coverage_1",specific_fp,".png"), 
-           width = 12, height = 10, res = 300)
+           paste0(plots_folder, "/coverage_",specific_fp,".png"), 
+           width = 14, height = 13, res = 300)
+
+save_as_pdf(print(graph3),
+           paste0(plots_folder, "/F7_A.pdf"), 
+           width = 14, height = 13)
 
 colnames(heat_coverage) <- paste0("Coverage_", timepoints$samples)
 output_table <- cbind(heat_coverage, heat_matrix, new_annotations[, 1:6])

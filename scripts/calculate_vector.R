@@ -18,14 +18,14 @@ source("plot_functions.R")
 
 # Inputs ----------------------------------
 # mean_all --> mean of all the existing mutations
-# simple_mean --> mean of  all the mutations
-# min_existing_unique --> min of the unique existing (greater than 0) mutation
+# simple_mean --> mean of  all the mutations  +
+# min_existing_unique --> min of the unique existing (greater than 0) mutation   +
 # mean_existing_unique --> mean of the existing unique mutations
-# simple_mean_unique --> mean of the unique mutations
+# simple_mean_unique --> mean of the unique mutations   +
 
-method <- "mean_existing_unique"
+method <- "simple_mean_unique"
 
-input_data <- read.csv("new files/sars-sewage.csv")
+input_data <- read.csv("new files/sewage_VCFList.csv")
 
 # Read meta-data file ------------
 
@@ -44,16 +44,15 @@ aa_abbreviations <- read.table(amino_acids, header = T, sep = ",")
 
 # Set mutations source and filepaths ----------------
 
-mutations_source <-  "outbreak_info" # "pangolin"   #or "veo" 
+mutations_source <- "pangolin"   # "veo"   #or "outbreak_info"
 
-plots_folder <- "new sars/new samples/outbreak_info"
+plots_folder <- "new sars/samples_24_5/pangolin"
 
-files <- list.files("outbreak_info/")
+files <- list.files("pangolin data/")
 
 # Create heatmaps ------------------------
 
 input_data <- input_data[which(input_data$ID != ""), ]
-col_fun = colorRamp2(c( 0,1), c("#FFF6FF", "red"))
 
 all_data <- list()
 
@@ -362,7 +361,10 @@ table_means <- data.table(lineage = character(),
                           March_19_25 = numeric(),
                           March_26_April_01 = numeric(),
                           April_02_08 = numeric(),
-                          April_09_15 = numeric())
+                          April_09_15 = numeric(),
+                          April_16_22 = numeric(),
+                          April_23_29 = numeric(),
+                          April_30_May_6 = numeric())
 
 
   
@@ -388,7 +390,10 @@ for (i in c(1:length(all_data))){
                             March_19_25 = temp[8],
                             March_26_April_01 = temp[9],
                             April_02_08 = temp[10],
-                            April_09_15 = temp[11])
+                            April_09_15 = temp[11],
+                            April_16_22 = temp[12],
+                            April_23_29 = temp[13],
+                            April_30_May_6 = temp[14])
       
     } else if (nrow(temp) == 0) {
       temp[is.na(temp)] <- 0
@@ -403,11 +408,14 @@ for (i in c(1:length(all_data))){
                             March_19_25 = temp[8],
                             March_26_April_01 = temp[9],
                             April_02_08 = temp[10],
-                            April_09_15 = temp[11])
+                            April_09_15 = temp[11],
+                            April_16_22 = temp[12],
+                            April_23_29 = temp[13],
+                            April_30_May_6 = temp[14])
       
     } else if (is.matrix(temp)){
       
-      temp <- temp[, 1:11]
+      temp <- temp[, 1:14]
       
       if (is.vector(temp)) {
         temp[is.na(temp)] <- 0
@@ -423,7 +431,10 @@ for (i in c(1:length(all_data))){
                               March_19_25 = vector_[8],
                               March_26_April_01 = vector_[9],
                               April_02_08 =vector_[10],
-                              April_09_15 = vector_[11]) 
+                              April_09_15 = vector_[11],
+                              April_16_22 = vector_[12],
+                              April_23_29 =vector_[13],
+                              April_30_May_6 = vector_[14]) 
       } else {
         
         temp <- apply(temp, 2, as.numeric)
@@ -435,7 +446,7 @@ for (i in c(1:length(all_data))){
           
         } else if (str_detect(method, "min")) {
           
-          vector_ <- numeric(11)
+          vector_ <- numeric(14)
           for (x in 1:ncol(temp)) {
             vector_[x] <- min(temp[, x], na.rm = TRUE)
           }
@@ -456,7 +467,10 @@ for (i in c(1:length(all_data))){
                               March_19_25 = vector_[8],
                               March_26_April_01 = vector_[9],
                               April_02_08 =vector_[10],
-                              April_09_15 = vector_[11]) 
+                              April_09_15 = vector_[11],
+                              April_16_22 = vector_[12],
+                              April_23_29 =vector_[13],
+                              April_30_May_6 = vector_[14]) 
       }
       
     }
@@ -468,5 +482,7 @@ for (i in c(1:length(all_data))){
 
 colnames(table_means)[2:ncol(table_means)] <- timepoints$heat_labels
 
-write.csv(table_means, paste0(plots_folder,"/", method, "_vector_values.csv"), row.names = F)
+write.csv(table_means, 
+          paste0(plots_folder,"/", method, "_vector_values.csv"),
+          row.names = F)
 

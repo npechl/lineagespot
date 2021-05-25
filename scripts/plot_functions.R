@@ -565,7 +565,10 @@ create_dotplot <- function(heat_matrix,
                                   rep(7, nrow(heat_matrix)),
                                   rep(8, nrow(heat_matrix)),
                                   rep(9, nrow(heat_matrix)),
-                                  rep(10, nrow(heat_matrix))),
+                                  rep(10, nrow(heat_matrix)),
+                                  rep(11, nrow(heat_matrix)),
+                                  rep(12, nrow(heat_matrix)),
+                                  rep(13, nrow(heat_matrix))),
                          variant = rep(new_annotations$mutation, ncol(heat_matrix)))
   
  
@@ -589,7 +592,7 @@ create_dotplot <- function(heat_matrix,
           #legend.position = "none"
     ) +
     guides(fill = guide_legend(title = "variant")) +
-    scale_x_continuous(labels=colnames(heat_matrix), breaks = c(0,1,2,3,4,5,6,7,8,9,10)) +
+    scale_x_continuous(labels=colnames(heat_matrix), breaks = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13)) +
     geom_smooth(se = F,  formula = y ~ poly(x,4), method = lm, 
                 color = "black", aes(x = time, y = AF), inherit.aes = FALSE) +
     geom_label_repel(data = line_labels, aes (x = x, y = y, label = label), 
@@ -600,10 +603,10 @@ create_dotplot <- function(heat_matrix,
   
   if (use_nas == TRUE){
     save_image(print(plot), paste0(plots_folder, "/dotplots/dotplot_nas_", specific_fp,".png"), 
-               width = 16, height = 7,res = 200)
+               width = 18, height = 7,res = 200)
   } else {
     save_image(print(plot), paste0(plots_folder, "/dotplots/dotplot_", specific_fp,".png"), 
-               width = 16, height = 7,res = 200)
+               width = 18, height = 7,res = 200)
   }
   
  
@@ -626,7 +629,10 @@ create_boxplot <- function(heat_matrix,
                                   rep("7", nrow(heat_matrix)),
                                   rep("8", nrow(heat_matrix)),
                                   rep("9", nrow(heat_matrix)),
-                                  rep("91", nrow(heat_matrix))))
+                                  rep("91", nrow(heat_matrix)),
+                                  rep("92", nrow(heat_matrix)),
+                                  rep("93", nrow(heat_matrix)),
+                                  rep("94", nrow(heat_matrix))))
                          # time = c(rep(colnames(heat_matrix)[1], nrow(heat_matrix)),
                          #          rep(colnames(heat_matrix)[2], nrow(heat_matrix)),
                          #          rep(colnames(heat_matrix)[3], nrow(heat_matrix)),
@@ -637,7 +643,7 @@ create_boxplot <- function(heat_matrix,
   
   labels <- data.table(names = paste0(colSums(heat_matrix != 0), "/", nrow(heat_matrix)),
                        pos_y = apply(heat_matrix, 2, quantile)[4, ],
-                       pos_x = seq(0,10,1))
+                       pos_x = seq(0,13,1))
   
   plot <- ggplot(data = data_box , aes(x=time, y=AF, fill=time)) +
     geom_boxplot(position=position_dodge(width=0.8), width = 0.4) +
@@ -660,12 +666,13 @@ create_boxplot <- function(heat_matrix,
               size=4.5, position=position_dodge(width=0.1), inherit.aes = FALSE) +
     scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2), 
                        labels = c("0", "0.2", "0.4", "0.6", "0.8", "1", " ")) +
-    scale_x_discrete(labels=colnames(heat_matrix), breaks = c("0","1","2","3","4","5","6", "7", "8", "9", "91")) 
+    scale_x_discrete(labels=colnames(heat_matrix), 
+                     breaks = c("0","1","2","3","4","5","6", "7", "8", "9", "91", "92", "93", "94")) 
 
   
   dir.create(paste0(plots_folder, "/boxplots"))
   save_image(print(plot), paste0(plots_folder, "/boxplots/boxplot_", specific_fp,".png"), 
-             width = 12, height = 7,res = 200)
+             width = 14, height = 7,res = 200)
   
   
 }

@@ -18,7 +18,7 @@ source("plot_functions.R")
 
 # Read sewage data ---------------------
 
-sewage_file <- "new files/sars-sewage.csv"
+sewage_file <- "new files/sewage_VCFList.csv"
 input_data <- read.csv(sewage_file)
 rm(sewage_file)
 
@@ -34,7 +34,7 @@ rm(meta_data, meta_file)
 
 # Read VOC/VOI data ---------------
 
-mutations_source <- "outbreak_info" #  "veo" #or   "pangolin" 
+mutations_source <- "outbreak_info" #"pangolin"   #or  "veo"   
 specific_fp <- "outbreak_info/"
 
 all_files <- list.files(specific_fp)
@@ -48,7 +48,7 @@ rm(amino_acids)
 
 # Create outputs folder -------------
 
-plots_folder <- "new sars/new samples"
+plots_folder <- "new sars/samples_24_5"
 dir.create(plots_folder)
 
 # Set threshold for all variants heatmap ----------
@@ -57,7 +57,7 @@ threshold <- 0.5
 # Create heatmaps ------------------
 
 input_data <- input_data[which(input_data$ID != ""), ]
-col_fun = colorRamp2(c( 0,1), c("#FFF6FF", "red"))
+col_fun = colorRamp2(c( 0,1), c("#FFF6FF", "#BC3C29FF"))
 
 # Common variants --------------------------
 
@@ -522,7 +522,7 @@ for (one_file in all_files) {
   #  1.5 * nrow(timepoints) + 6
   
   heat_heigth <- nrow(heat_matrix) + 6
-  
+   # heat_heigth <- 27
   graph3 <-Heatmap(heat_matrix, name = "frequency", 
                      col = col_fun,
                      heatmap_width =  heat_width + unit( 1.1 * nrow(timepoints) + 6, "cm"), 
@@ -552,7 +552,10 @@ for (one_file in all_files) {
                      cluster_row_slices = F,
     )
   
-
+  save_as_pdf(print(graph3),
+             paste0(plots_folder, "/F9_A.pdf"),
+             width = 1.5 * nrow(timepoints) + 10,
+             height = heat_heigth/2.5)
   
   save_image(print(graph3),
              paste0(plots_folder, "/",one_file,".png"),
