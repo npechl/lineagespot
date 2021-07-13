@@ -1,6 +1,6 @@
 # Lineagespot
 
-Lineagespot is a framework written in [R](https://www.r-project.org/), and aims to identify and assign different SARS-CoV-2 lineages based on a single variant file (i.e., variant calling format). 
+Lineagespot is a framework written in [R](https://www.r-project.org/), and aims to identify SARS-CoV-2 related mutations based on a single (or a list) of variant(s) file(s) (i.e., [variant calling format](https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format)). 
 
 ## Installation
 
@@ -8,14 +8,8 @@ Lineagespot is a framework written in [R](https://www.r-project.org/), and aims 
 
 The following [CRAN](https://cran.r-project.org/) packages need to be installed in order to run the project:
 
-```
-install.packages(c("data.table", 
-                   "stringr", 
-                   "readr", 
-                   "stringdist", 
-                   "seqinr", 
-                   "vcfR", 
-                   "openxlsx"))
+```R
+install.packages(c("data.table", "vcfR", "stringr", "readr", "stringdist", "seqinr", "openxlsx"))
 ```
 
 ### Installing
@@ -28,15 +22,20 @@ git clone https://github.com/BiodataAnalysisGroup/lineagespot.git
 
 ## Usage
 
-The project consists of three main scripts:
+The project consists of four main scripts:
 
-- `01-find-lineages-v3.R`
-- `02-collapse.R`
-- `03-compare-files.R`
+- `01_merge_vcf.R`: A script for merging all identified mutations into an integrated table.
+- `02a-compare_with_pangolin.R`: A script for comparing mutations with Pangolin tool.
+- `02b-collapse.R`: A script for collapsing the table produced by the previous step (02a).
+- `02c-compare-files.R`: A script for comparing different output files from previous steps (02a - 02b).
 
 ### Inputs
 
-- `01-find-lineages-v3.R`: 
+- `01_merge_vcf.R`:
+    - `path_to_vcfFolder`: path to the folder containing VCF files
+    - `path_to_metaData`: path to a tab-delimited meta data file
+    
+- `02a-compare_with_pangolin.R`: 
     - `reference.path`: Path to the referece SARS-CoV-2 genome file (in FASTA format).
     - `vcf.path`: Path to the inputs VCF file.
     - `decision.rules.path`: Path of the Pangolin decision rules file (by default this file is downloaded to the given path).
@@ -44,32 +43,17 @@ The project consists of three main scripts:
 
 **It should be noted that the first script applys on VCF files which contain FORMAT or sample-specific information. Examples of this kind of format can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format) or [here](https://hbctraining.github.io/In-depth-NGS-Data-Analysis-Course/sessionVI/lessons/02_variant-calling.html).**
 
-- `02-collapse.R`:
+- `02b-collapse.R`:
     - `analysis_output_filename`: Input file path.
 
-- `03-compare-files.R` (optional):
+- `02c-compare-files.R` (optional):
     - `input.folder`: Path to folder with multiple Lineagespot output files, that need to be compared
 
 *before running the ```03-compare-files.R``` script, make sure you have run the ```01-find-lineages-v3.R``` script for all the different vcf files.
 
 ### Outputs
 
-Two output files are produced by the Lineagespot:
-
-#### A tab-delimited file (TSV) containing the most probable lineages that have been found:
-
-|Lineage |Rules |Total |Tree Overlap |Total Overlap |Tree Ratio |Total Ratio |Tree Av. DP |Total Av. AD |Av. DP |Total Run Reads |
-| ------ | ---- | ---- | ----------- | ------------ | --------- | ---------- | ---------- | ----------- | ----- | -------------- |
-|B.1.177.17 |28931!='A',... |4 |4 |4 |1 |1 |7 |7 |21.3780 |69706 |
-|B.1.177 |28931!='A',... |5 |5 |5 |1 |1 |1 |1 |21.3780 |69706 |
-|B.1.177 |28931!='A',... |6 |4 |4 |0.66 |0.66 |1 |1 |21.3780 |69706 |
-
-#### A collapsed table:
-
-|Lineage |Mean Tree Ratio |Mean Total Ratio |Mean Total Ratio Var |Mean Tree Av. DP |Mean total Av. DP|
-| ------ | ------------- | -------------- | -------------- | --------------- | --------------------- |  
-|B.1.177.17 |1 |1 |7 |7 |7 |
-|B.1.177 |1 |1 |7 |10 |1.01 |
+Lineagespot provides an output tab-delimited table with all the identified mutations for all of the provided samples.
 
 ## Raw data analysis
 
