@@ -4,16 +4,16 @@
 
 bcftools mpileup \
 --fasta-ref /work/nikospech/SARS-CoV-2/ref/NC_045512.fasta \
-Sewage_CoV19_L3_S1_L001_sorted_uniq.bam \
+L7_S4_L001_sorted_uniq.bam \
 -o Sewage_CoV19_L3_S1_L001_mpileup.vcf
 
 # freebayes tool
 
 freebayes \
 -f /work/nikospech/SARS-CoV-2/ref/NC_045512.fasta \
--F 0.5 \
+-F 0.01 \
 -C 1 \
---pooled-continuous CoV19_L1_S1_sorted_uniq.bam > CoV19_L1_S1_freebayes_50.vcf
+--pooled-continuous L4_S1_L001_sorted_uniq.bam > L4_S1_L001_freebayes.vcf
 
 
 
@@ -36,4 +36,4 @@ samtools index Sewage_CoV19_L3_S1_L001_sorted_uniq_rg.bam
 
 source activate covid19
 
-snpEff ann NC_045512.2 CoV19_L1_S1_freebayes_10.vcf > CoV19_L1_S1_freebayes_10_ann.vcf
+snpEff ann NC_045512.2 L4_S1_L001_freebayes.vcf > L4_S1_L001_freebayes_ann.vcf
