@@ -9,7 +9,7 @@ Lineagespot is a framework written in [R](https://www.r-project.org/), and aims 
 The following [CRAN](https://cran.r-project.org/) packages need to be installed in order to run the project:
 
 ```R
-install.packages(c("data.table", "vcfR", "stringr", "readr", "stringdist", "seqinr", "openxlsx"))
+install.packages(c("data.table", "stringr", "vcfR"))
 ```
 
 ### Installing
@@ -25,17 +25,21 @@ git clone https://github.com/BiodataAnalysisGroup/lineagespot.git
 The project consists of four main scripts:
 
 - `01_merge_vcf.R`: A script for merging all identified mutations into an integrated table.
-- `02a-compare_with_pangolin.R`: A script for comparing mutations with Pangolin tool.
-- `02b-collapse.R`: A script for collapsing the table produced by the previous step (02a).
-- `02c-compare-files.R`: A script for comparing different output files from previous steps (02a - 02b).
+- `02_outbreak_info_hits.R`: A script for finding hits with outbreak info lineage variants. Examples can be found [here](ref/outbreak_info). 
+- `03a-compare_with_pangolin.R`: A script for comparing mutations with Pangolin tool.
+- `03b-collapse.R`: A script for collapsing the table produced by the previous step (02a).
+- `03c-compare-files.R`: A script for comparing different output files from previous steps (02a - 02b).
 
 ### Inputs
 
 - `01_merge_vcf.R`:
     - `path_to_vcfFolder`: path to the folder containing VCF files
-    - `path_to_metaData`: path to a tab-delimited meta data file
+
+- `02_outbreak_info_hits.R`: 
+    - `path_to_vcfList`: path to the VCF list table produced by `01_merge_vcf.R`.
+    - `path_to_outbreak_info`: path to outbreak info reference variants folder.
     
-- `02a-compare_with_pangolin.R`: 
+- `03a_compare_with_pangolin.R`: 
     - `reference.path`: Path to the referece SARS-CoV-2 genome file (in FASTA format).
     - `vcf.path`: Path to the inputs VCF file.
     - `decision.rules.path`: Path of the Pangolin decision rules file (by default this file is downloaded to the given path).
@@ -43,13 +47,13 @@ The project consists of four main scripts:
 
 **It should be noted that the first script applys on VCF files which contain FORMAT or sample-specific information. Examples of this kind of format can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format) or [here](https://hbctraining.github.io/In-depth-NGS-Data-Analysis-Course/sessionVI/lessons/02_variant-calling.html).**
 
-- `02b-collapse.R`:
+- `03b_collapse.R`:
     - `analysis_output_filename`: Input file path.
 
-- `02c-compare-files.R` (optional):
+- `03c_compare_files.R` (optional):
     - `input.folder`: Path to folder with multiple Lineagespot output files, that need to be compared
 
-*before running the ```03-compare-files.R``` script, make sure you have run the ```01-find-lineages-v3.R``` script for all the different vcf files.
+*before running the ```03c_compare_files.R``` script, make sure you have run the ```03a_compare_with_pangolin.R``` script for all the different vcf files.
 
 ### Outputs
 
