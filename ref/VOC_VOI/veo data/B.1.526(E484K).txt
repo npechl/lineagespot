@@ -1,6 +1,0 @@
-aa:S:L5F
-aa:S:T95I
-aa:S:D253G
-aa:S:E484K
-aa:S:D614G
-aa:S:A701V

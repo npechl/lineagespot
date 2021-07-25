@@ -1,3 +1,0 @@
-aa:S:N439K
-aa:S:D614G
-aa:S:P681R

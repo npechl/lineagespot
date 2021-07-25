@@ -1,8 +1,0 @@
-aa:S:Q52R
-aa:S:A67V
-del:S:H69_V70del
-del:S:Y145del
-aa:S:E484K
-aa:S:D614G
-aa:S:Q677H
-aa:S:F888L
