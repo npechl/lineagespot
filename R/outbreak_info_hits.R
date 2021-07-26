@@ -249,7 +249,7 @@ outbreak_info_hits <- function(vcf_table = NULL,
 
     }
 
-    # not_overlapping_variants = base::names(which(lapply(voc_data, nrow) == 0))
+    not_overlapping_variants = base::names(which(lapply(voc_data, nrow) == 0))
 
 
     voc_data = data.table::rbindlist(voc_data)
@@ -289,6 +289,19 @@ outbreak_info_hits <- function(vcf_table = NULL,
 
 
     voc_data$AF = voc_data$AD_alt / voc_data$DP
+
+    # add non overlapping rules ----------------------------------------------------
+
+
+    not_overlapping_variants = str_split(not_overlapping_variants, "\\:", simplify = TRUE)
+
+    voc_data = rbind(voc_data,
+                     data.table(Gene_Name = rep(not_overlapping_variants[,1], length(unique(voc_data$sample))),
+                                AA_alt = rep(not_overlapping_variants[,2], length(unique(voc_data$sample))),
+                                sample = unique(voc_data$sample),
+                                DP = 0,
+                                AD_alt = 0,
+                                AF = 0))
 
     VoC_hits_list[[ref_index]] = voc_data
 

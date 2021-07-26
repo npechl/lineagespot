@@ -2,5 +2,6 @@
 
 export(merge_vcf)
 export(outbreak_info_hits)
+export(uniq_variants)
 import(data.table)
 import(stringr)
