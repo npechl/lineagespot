@@ -14,6 +14,10 @@
 #'
 #' A parameter indicating the AF threshold for identifying variants per sample
 #'
+#' @param file.out
+#'
+#' Given name for the output file
+#'
 #' @import data.table
 #' @import stringr
 #'
@@ -25,6 +29,7 @@
 
 uniq_variants <- function(hits_table = NULL,
                           AF_threshold = 0.8,
+                          file.out = "lineage-report.txt",
                           print.out = FALSE) {
 
   if( base::is.null(hits_table) ) {
@@ -94,7 +99,7 @@ uniq_variants <- function(hits_table = NULL,
   if( print.out ) {
 
     data.table::fwrite(overall,
-                       file = "lineage-report.txt",
+                       file = file.out,
                        row.names = FALSE,
                        quote = FALSE,
                        sep = "\t")

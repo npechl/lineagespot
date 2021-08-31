@@ -4,12 +4,19 @@
 \alias{merge_vcf}
 \title{merge_vcf}
 \usage{
-merge_vcf(vcf_fls = NULL, vcf_folder = NULL, print.out = FALSE)
+merge_vcf(
+  vcf_fls = NULL,
+  vcf_folder = NULL,
+  file.out = "vcfList_table.txt",
+  print.out = FALSE
+)
 }
 \arguments{
 \item{vcf_fls}{A list of paths to vcf files}
 
 \item{vcf_folder}{A path to a folder containing all VCF file that will be integrated into a single table}
+
+\item{file.out}{Given name for the output file}
 
 \item{print.out}{logical value indicating if the produced table should be printed}
 }

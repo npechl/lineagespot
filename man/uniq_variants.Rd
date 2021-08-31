@@ -4,12 +4,19 @@
 \alias{uniq_variants}
 \title{Lineage report for variants overlapping}
 \usage{
-uniq_variants(hits_table = NULL, AF_threshold = 0.8, print.out = FALSE)
+uniq_variants(
+  hits_table = NULL,
+  AF_threshold = 0.8,
+  file.out = "lineage-report.txt",
+  print.out = FALSE
+)
 }
 \arguments{
 \item{hits_table}{A tab-delimited table containing the overlaps identified}
 
 \item{AF_threshold}{A parameter indicating the AF threshold for identifying variants per sample}
+
+\item{file.out}{Given name for the output file}
 
 \item{print.out}{logical value indicating if the produced table should be printed}
 }

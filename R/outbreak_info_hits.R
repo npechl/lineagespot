@@ -15,86 +15,42 @@
 #'
 #' logical value indicating if the produced table should be printed
 #'
+#' @param file.out
+#'
+#' Given name for the output file
+#'
 #' @import data.table
 #' @import stringr
 #'
 #' @return
 #'
-#' @export outbreak_info_hits
+#' @export lineagespot_hits
 #'
 #' @examples
 
 
-outbreak_info_hits <- function(vcf_table = NULL,
-                               ref_folder = NULL,
-                               print.out = FALSE) {
+lineagespot_hits <- function(vcf_table = NULL,
+                             ref_folder = NULL,
+                             file.out = "variantsList.lineagespot.txt",
+                             print.out = FALSE) {
 
 
-  if( base::is.null(vcf_table) ) {
+  if( is.null(vcf_table) ) {
 
-    base::stop('Please provide a tab-delimited table containing variants.')
-
-  }
-
-  if( base::is.null(ref_folder) ) {
-
-    base::stop('Please provide a path to outbreak.info VoC reports.')
+    stop('Please provide a tab-delimited table containing variants.')
 
   }
 
-  # create AA abbreviation --------------------------------------------------------
+  if( is.null(ref_folder) ) {
 
-  AA_abbreviations = data.table::data.table(Three_Letter = c("Ala",
-                                                             "Arg",
-                                                             "Asn",
-                                                             "Asp",
-                                                             "Cys",
-                                                             "Glu",
-                                                             "Gln",
-                                                             "Gly",
-                                                             "His",
-                                                             "Ile",
-                                                             "Leu",
-                                                             "Lys",
-                                                             "Met",
-                                                             "Phe",
-                                                             "Pro",
-                                                             "Ser",
-                                                             "Thr",
-                                                             "Trp",
-                                                             "Tyr",
-                                                             "Val"),
+    stop('Please provide a path to outbreak.info VoC reports.')
 
-                                            One_Letter = c("A",
-                                                           "R",
-                                                           "N",
-                                                           "D",
-                                                           "C",
-                                                           "E",
-                                                           "Q",
-                                                           "G",
-                                                           "H",
-                                                           "I",
-                                                           "L",
-                                                           "K",
-                                                           "M",
-                                                           "F",
-                                                           "P",
-                                                           "S",
-                                                           "T",
-                                                           "W",
-                                                           "Y",
-                                                           "V"))
-
-  # remove "p." character and correct ORF ----------------------------------------
-
-  vcf_table$AA_alt = stringr::str_remove(vcf_table$AA_alt, "p\\.")
-
+  }
 
   # clean AA variants ------------------------------------------------------------
 
-  aa_variants = stringr::str_split(vcf_table$AA_alt, "[0-9]|_")
-  codon_num = stringr::str_split(vcf_table$AA_alt, "[A-Z]|[a-z]|\\_|\\*|\\?")
+  aa_variants = str_split(vcf_table$AA_alt, "[0-9]|_")
+  codon_num = str_split(vcf_table$AA_alt, "[A-Z]|[a-z]|\\_|\\*|\\?")
 
   aa_variants = base::lapply(aa_variants, function(x) {
 
@@ -111,23 +67,23 @@ outbreak_info_hits <- function(vcf_table = NULL,
 
   # merge overall tables ---------------------------------------------------------
 
-  aa_split_list = base::lapply(seq(1:base::nrow(vcf_table)), function(i) {
+  aa_split_list = base::lapply(seq(1:nrow(vcf_table)), function(i) {
 
-    out = data.table::data.table(ref_aa = NA,
-                                 alt_aa = NA,
-                                 info = NA,
-                                 codon_num = NA,
-                                 codon_end = NA)
+    out = data.table(ref_aa = NA,
+                     alt_aa = NA,
+                     info = NA,
+                     codon_num = NA,
+                     codon_end = NA)
 
 
-    if(base::length(aa_variants[[i]]) == 2) {
+    if(length(aa_variants[[i]]) == 2) {
 
       out$ref_aa = aa_variants[[i]][1]
       out$alt_aa = aa_variants[[i]][2]
 
       out$codon_num = codon_num[[i]][1]
 
-    } else if(base::length(aa_variants[[i]] == 3)) {
+    } else if(length(aa_variants[[i]] == 3)) {
 
       out$ref_aa = aa_variants[[i]][1]
       out$alt_aa = aa_variants[[i]][2]
@@ -146,99 +102,92 @@ outbreak_info_hits <- function(vcf_table = NULL,
 
   })
 
-  aa_split_list = data.table::rbindlist(aa_split_list)
+  aa_split_list = rbindlist(aa_split_list)
 
-  vcf_table = base::cbind(vcf_table, aa_split_list)
+  vcf_table = cbind(vcf_table, aa_split_list)
 
-  vcf_table$change_length_nt = base::abs(stringr::str_length(vcf_table$ALT) - stringr::str_length(vcf_table$REF))
+  vcf_table$change_length_nt = base::abs(str_length(vcf_table$ALT) - str_length(vcf_table$REF))
 
-  vcf_table$codon_num = base::as.numeric(vcf_table$codon_num)
-  vcf_table$codon_end = base::as.numeric(vcf_table$codon_end)
+  vcf_table$codon_num = as.numeric(vcf_table$codon_num)
+  vcf_table$codon_end = as.numeric(vcf_table$codon_end)
 
 
   # add AA variants with Nt when there is not any --------------------------------
 
-  vcf_table[base::which(vcf_table$AA_alt == ""), ]$AA_alt = vcf_table[base::which(vcf_table$AA_alt == ""), ]$ID
-
-
-  # clean AA abbreviation --------------------------------------------------------
-
-  for(i in 1:base::nrow(AA_abbreviations)) {
-
-    vcf_table$ref_aa = stringr::str_replace_all(vcf_table$ref_aa,
-                                                AA_abbreviations[i,]$Three_Letter,
-                                                AA_abbreviations[i,]$One_Letter)
-
-    vcf_table$alt_aa = stringr::str_replace_all(vcf_table$alt_aa,
-                                                AA_abbreviations[i,]$Three_Letter,
-                                                AA_abbreviations[i,]$One_Letter)
-
-    vcf_table$AA_alt = stringr::str_replace_all(vcf_table$AA_alt,
-                                                AA_abbreviations[i,]$Three_Letter,
-                                                AA_abbreviations[i,]$One_Letter)
-
-  }
-
+  # vcf_table[base::which(vcf_table$AA_alt == ""), ]$AA_alt = vcf_table[base::which(vcf_table$AA_alt == ""), ]$ID
 
   # read reference ---------------------------------------------------------------
 
   fls_ref = base::list.files(ref_folder,
-                             pattern = "outbreakinfo",
+                             pattern = "txt",
                              full.names = TRUE)
 
   VoC_hits_list = base::list()
 
   for(ref_index in fls_ref) {
 
-    ref = data.table::fread(ref_index)
+    ref = fread(ref_index)
 
-    ref[base::which(ref$gene == "ORF1a"), ] $gene = "ORF1ab"
-    ref[base::which(ref$gene == "ORF1b"), ] $gene = "ORF1ab"
+    ref = ref[order(ref$gene), ]
 
-    ref = ref[base::order(ref$gene), ]
+    ref$barcode = paste0(ref$gene, ":", ref$`amino acid`)
 
+    ref$type = "snp"
 
-    ref$barcode = base::paste0(ref$gene, ":", ref$ref_aa, ref$codon_num, ref$alt_aa)
+    ref[which(str_detect(ref$`amino acid`, "del")), ]$type = "deletion"
 
-    ref[base::which(ref$type == "deletion"), ]$barcode = ref[base::which(ref$type == "deletion"), ]$ref_aa
+    aa_variants = str_split(ref$`amino acid`, "[0-9]|_|\\/")
+    codon_num = str_split(ref$`amino acid`, "[A-Z]|[a-z]|\\_|\\*|\\?|\\/")
 
-    ref[base::which(ref$change_length_nt == "None"), ]$change_length_nt = "0"
+    aa_variants = base::lapply(aa_variants, function(x) {
 
-    ref$change_length_nt = base::as.numeric(ref$change_length_nt)
+      x = x[x != ""]
 
+      x = str_replace_all(x, "\\*", "\\\\*")
+
+      return( x )
+
+    })
+
+    codon_num = base::lapply(codon_num, function(x) {
+
+      return( as.numeric(x[x != ""]) )
+
+    })
 
     # VoC hits -----------------------------------------------------------------
 
-    ref$alt_aa = stringr::str_replace(ref$alt_aa, "\\*", "\\\\*")
-    vcf_table$alt_aa = stringr::str_replace(vcf_table$alt_aa, "\\*", "\\\\*")
+    # ref$alt_aa = stringr::str_replace(ref$alt_aa, "\\*", "\\\\*")
+    # vcf_table$alt_aa = stringr::str_replace(vcf_table$alt_aa, "\\*", "\\\\*")
 
-    voc_data = base::list()
+    voc_data = list()
 
-    for(i in 1:base::nrow(ref)) {
+    for(i in 1:nrow(ref)) {
 
+      if(ref[i,]$type == "snp") {
 
-      if(ref[i,]$type == "substitution") {
+        temp = vcf_table[which(vcf_table$Gene_Name == ref[i,]$gene), ]
 
-        temp = vcf_table[base::which(vcf_table$Gene_Name == ref[i,]$gene), ]
+        temp = temp[which(str_detect(temp$ref_aa, aa_variants[[i]][1] )), ]
 
-        temp = temp[base::which(stringr::str_detect(temp$ref_aa, ref[i,]$ref_aa)), ]
+        temp = temp[base::which(stringr::str_detect(temp$alt_aa, aa_variants[[i]][2] )), ]
 
-        temp = temp[base::which(stringr::str_detect(temp$alt_aa, ref[i,]$alt_aa)), ]
+        who = which(temp$codon_num == codon_num[[i]] | temp$codon_num == codon_num[[i]] + 1 | temp$codon_num == codon_num[[i]] - 1)
 
-        temp = temp[base::which(temp$codon_num == ref[i,]$codon_num | temp$codon_num == ref[i,]$codon_num + 1 | temp$codon_num == ref[i,]$codon_num - 1), ]
+        temp = temp[who, ]
 
-        temp = temp[base::which(temp$change_length_nt == ref[i,]$change_length_nt), ]
+        # temp = temp[base::which(temp$change_length_nt == ref[i,]$change_length_nt), ]
 
       } else {
 
-        temp = vcf_table[base::which(vcf_table$Gene_Name == ref[i,]$gene), ]
-        temp = temp[base::which(stringr::str_detect(temp$AA_alt, "del")), ]
+        temp = vcf_table[which(vcf_table$Gene_Name == ref[i,]$gene), ]
+        temp = temp[which(str_detect(temp$AA_alt, "del")), ]
 
-        temp = temp[base::which(temp$codon_num == ref[i,]$codon_num), ]
-        temp = temp[base::which(temp$codon_end == ref[i,]$codon_end), ]
+        who = which(temp$codon_num == codon_num[[i]][1] | temp$codon_num == codon_num[[i]][2] | temp$codon_end == codon_num[[i]][2] | temp$codon_end == codon_num[[i]][1])
+        temp = temp[who, ]
 
-        temp = temp[base::which(temp$change_length_nt == ref[i,]$change_length_nt), ]
-
+        # temp = temp[which(temp$codon_end == codon_num[[i]][2]), ]
+        # temp = temp[base::which(temp$change_length_nt == ref[i,]$change_length_nt), ]
 
       }
 
@@ -249,12 +198,12 @@ outbreak_info_hits <- function(vcf_table = NULL,
 
     }
 
-    not_overlapping_variants = base::names(which(lapply(voc_data, nrow) == 0))
+    not_overlapping_variants = names(which(lapply(voc_data, nrow) == 0))
 
 
-    voc_data = data.table::rbindlist(voc_data)
+    voc_data = rbindlist(voc_data)
 
-    voc_data = base::unique(voc_data)
+    voc_data = unique(voc_data)
 
 
 
@@ -312,9 +261,9 @@ outbreak_info_hits <- function(vcf_table = NULL,
 
   for(i in base::names(VoC_hits_list)) {
 
-    strain = stringr::str_split(i, "_", simplify = TRUE)
-    strain = strain[, base::ncol(strain)]
-    strain = stringr::str_remove(strain, "\\.tsv")
+    strain = str_split(i, "\\/", simplify = TRUE)
+    strain = strain[, ncol(strain)]
+    strain = str_remove(strain, "\\.txt")
 
     VoC_hits_list[[i]]$lineage = strain
 
@@ -323,19 +272,19 @@ outbreak_info_hits <- function(vcf_table = NULL,
   # rm(i, strain)
 
 
-  voc_data = data.table::rbindlist(VoC_hits_list)
+  voc_data = rbindlist(VoC_hits_list)
 
 
   if( print.out ) {
 
-    data.table::fwrite(voc_data,
-                       file = "sewage_outbreak.info_hits.txt",
-                       row.names = FALSE,
-                       quote = FALSE,
-                       sep = "\t")
+    fwrite(voc_data,
+           file = file.out,
+           row.names = FALSE,
+           quote = FALSE,
+           sep = "\t")
 
   }
 
-  base::return(voc_data)
+  return(voc_data)
 
 }
