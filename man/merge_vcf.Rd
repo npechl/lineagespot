@@ -7,6 +7,7 @@
 merge_vcf(
   vcf_fls = NULL,
   vcf_folder = NULL,
+  gff3_path = NULL,
   file.out = "vcfList_table.txt",
   print.out = FALSE
 )
@@ -15,6 +16,8 @@ merge_vcf(
 \item{vcf_fls}{A list of paths to vcf files}
 
 \item{vcf_folder}{A path to a folder containing all VCF file that will be integrated into a single table}
+
+\item{gff3_path}{Path to gff file}
 
 \item{file.out}{Given name for the output file}
 

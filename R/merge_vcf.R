@@ -18,6 +18,10 @@
 #'
 #' Given name for the output file
 #'
+#' @param gff3_path
+#'
+#' Path to gff file
+#'
 #' @import data.table
 #' @import stringr
 #'
@@ -30,6 +34,7 @@
 
 merge_vcf <- function(vcf_fls = NULL,
                       vcf_folder = NULL,
+                      gff3_path = NULL,
                       file.out = "vcfList_table.txt",
                       print.out = FALSE) {
 
@@ -47,6 +52,12 @@ merge_vcf <- function(vcf_fls = NULL,
                          pattern = "vcf",
                          full.names = TRUE)
 
+
+  }
+
+  if( is.null(gff3_path) ){
+
+    stop("Please provide a valid GFF file containing gene coordinates")
 
   }
 
@@ -82,7 +93,9 @@ merge_vcf <- function(vcf_fls = NULL,
 
   # add variant parameters ----------------------------------------------------------
 
-  vcf_list = base::lapply(vcf_list, correct_Orf1ab_gene)
+  genes = read_gene_coordinates(gff_path = gff3_path)
+
+  vcf_list = base::lapply(vcf_list, correct_Orf1ab_gene, genes)
 
   # add sample name ------------------------------------------------------------------
 
@@ -121,32 +134,78 @@ merge_vcf <- function(vcf_fls = NULL,
 
 vcf_to_table <- function(x) {
 
+  # out = cbind(x@fix[,1:7],
+  #             vcfR::extract_gt_tidy(x, verbose = FALSE),
+  #             vcfR::extract_info_tidy(x))
+  #
+  # out = as.data.table(out)
+  #
+  # ANN_matrix = str_split(out$ANN, "\\|", simplify = TRUE)[,c(4, 10, 11)]
+  # # ANN_matrix = paste0(ANN_matrix[,1], "|", ANN_matrix[,2])
+  #
+  # out = out[,c("CHROM",
+  #              "POS",
+  #              "ID",
+  #              "REF",
+  #              "ALT",
+  #              "gt_DP",
+  #              "gt_AD"), with = FALSE]
+  #
+  # colnames(out) = c("CHROM",
+  #                   "POS",
+  #                   "ID",
+  #                   "REF",
+  #                   "ALT",
+  #                   "DP",
+  #                   "AD")
+  #
+  # out$CHROM = str_squish(out$CHROM)
+  # out$Gene_Name = ANN_matrix[,1]
+  # out$Nt_alt = ANN_matrix[,2]
+  # out$AA_alt = ANN_matrix[,3]
+  #
+  # return(out)
+
   out = cbind(x@fix[,1:7],
               vcfR::extract_gt_tidy(x, verbose = FALSE),
               vcfR::extract_info_tidy(x))
 
   out = as.data.table(out)
 
+  out = out[which(out$ALT != "<*>"), ]
+
   ANN_matrix = str_split(out$ANN, "\\|", simplify = TRUE)[,c(4, 10, 11)]
+
   # ANN_matrix = paste0(ANN_matrix[,1], "|", ANN_matrix[,2])
 
-  out = out[,c("CHROM",
-               "POS",
-               "ID",
-               "REF",
-               "ALT",
-               "gt_DP",
-               "gt_AD",
-               "TYPE"), with = FALSE]
-
-  colnames(out) = c("CHROM",
+  values_wewant = c("CHROM",
                     "POS",
                     "ID",
                     "REF",
                     "ALT",
-                    "DP",
-                    "AD",
-                    "TYPE")
+                    "gt_DP",
+                    "gt_AD")
+
+  result = intersect(values_wewant, colnames(out))
+
+  out = out[, result, with = FALSE]
+
+  if(identical((intersect(result, "gt_DP")), "gt_DP")){
+
+    names(out)[names(out) == "gt_DP"] = "DP"
+
+  }
+
+  if(identical((intersect(result, "gt_AD")), "gt_AD")){
+
+    names(out)[names(out) == "gt_AD"] = "AD"
+
+  }
+  #if(identical((intersect(result, "Indiv")), "Indiv")){
+  # sample=str_split(out$Indiv, "_S", simplify = TRUE)[,1]
+  #  out$Indiv = str_split(out$Indiv, "_S", simplify = TRUE)[,1]
+  #  names(out)[names(out) == "Indiv"] <- "sample"
+  #}
 
   out$CHROM = str_squish(out$CHROM)
   out$Gene_Name = ANN_matrix[,1]
@@ -161,7 +220,7 @@ break_multiple_variants <- function(x) {
 
   ALT_matrix = str_split(x$ALT, ",", simplify = TRUE)
   AD_matrix = str_split(x$AD, ",", simplify = TRUE)
-  TYPE_matrix = str_split(x$TYPE, ",", simplify = TRUE)
+  # TYPE_matrix = str_split(x$TYPE, ",", simplify = TRUE)
 
   out = list()
 
@@ -178,7 +237,7 @@ break_multiple_variants <- function(x) {
                           DP = x[who, ]$DP,
                           AD_ref = AD_matrix[who, 1],
                           AD_alt = AD_matrix[who, i+1],
-                          TYPE = TYPE_matrix[who, i],
+                          # TYPE = TYPE_matrix[who, i],
                           Gene_Name = x[who, ]$Gene_Name,
                           Nt_alt = x[who, ]$Nt_alt,
                           AA_alt = x[who, ]$AA_alt)
@@ -268,26 +327,13 @@ change_AA_abbreviations <- function(x) {
 
 }
 
-correct_Orf1ab_gene <- function(x) {
-
-  # print(head(x))
-
-  genes = data.table(gene_name = c("ORF1a", "ORF1b", "S", "ORF3a", "E", "M", "ORF6", "ORF7a", "ORF7b", "ORF8", "N", "ORF10"),
-
-                     start_pos = c(266, 13442, 21563, 25393, 26245, 26523, 27202, 27394, 27756, 27894, 28274, 29558),
-
-                     end_pos = c(13441, 21555, 25384, 26220, 26472, 27191, 27387, 27759, 27887, 28259, 29533, 29674))
-
+correct_Orf1ab_gene <- function(x, genes) {
 
   x$codon_num = 0
 
   x = x[order(x$POS), ]
 
   for(i in 1:nrow(genes)) {
-
-    # x = x[which(x$POS >= genes[i,]$start_pos & x$POS <= genes[i,]$end_pos), ]
-
-    # print(nrow(x))
 
     x[which(x$POS >= genes[i,]$start_pos & x$POS <= genes[i,]$end_pos), ]$codon_num = x[which(x$POS >= genes[i,]$start_pos & x$POS <= genes[i,]$end_pos), ]$POS - genes[i,]$start_pos + 1
     x[which(x$POS >= genes[i,]$start_pos & x$POS <= genes[i,]$end_pos), ]$Gene_Name = genes[i,]$gene_name
@@ -300,4 +346,39 @@ correct_Orf1ab_gene <- function(x) {
   return(x)
 
 }
+
+
+
+read_gene_coordinates <- function(gff_path) {
+
+  gene_annot = fread(gff_path, header = FALSE, sep = "\t")
+
+  gene_annot = gene_annot[, c(4, 5, 9), with = FALSE]
+
+  colnames(gene_annot) = c("start_pos", "end_pos", "gene_name")
+
+  gene_annot[which(gene_annot$gene_name %in% paste0("NSP", 1:10)), ]$gene_name = "ORF1a"
+
+  gene_annot[which(str_detect(gene_annot$gene_name, "NSP")), ]$gene_name = "ORF1b"
+
+  gene_annot = gene_annot[, .(start_pos = min(start_pos),
+                              end_pos = max(end_pos)), by = gene_name]
+
+  gene_annot = gene_annot[order(gene_annot$start_pos), ]
+
+  return(gene_annot)
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
