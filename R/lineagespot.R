@@ -14,9 +14,9 @@
 #'
 #' logical value indicating if the produced table should be printed
 #'
-#' @param file.out
+#' @param file.out.index
 #'
-#' Given name for the output file
+#' A string index merged at the output files
 #'
 #' @param gff3_path
 #'
@@ -45,21 +45,21 @@ lineagespot <- function(vcf_fls = NULL,
                         gff3_path = NULL,
                         ref_folder = NULL,
                         AF_threshold = 0.8,
-                        file.out.index = "lineagespot",
+                        file.out.index = Sys.Date(),
                         print.out = FALSE) {
 
 
   vcf_table = merge_vcf(vcf_fls = vcf_fls,
                         vcf_folder = vcf_folder,
                         gff3_path = gff3_path,
-                        file.out = paste0("vcfList_table_", file.out.index, ".txt"),
+                        file.out = paste0("Variant_table_", file.out.index, ".txt"),
                         print.out = print.out)
 
 
 
   hits_table = lineagespot_hits(vcf_table = vcf_table,
                                 ref_folder = ref_folder,
-                                file.out = paste0("variantsList_", file.out.index, ".txt"),
+                                file.out = paste0("lineage_hits_", file.out.index, ".txt"),
                                 print.out = print.out)
 
 

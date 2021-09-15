@@ -29,7 +29,7 @@
 
 uniq_variants <- function(hits_table = NULL,
                           AF_threshold = 0.8,
-                          file.out = "lineage-report.txt",
+                          file.out = paste0("lineage_report_", Sys.Date(), ".txt"),
                           print.out = FALSE) {
 
   if( base::is.null(hits_table) ) {

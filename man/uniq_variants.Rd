@@ -7,7 +7,7 @@
 uniq_variants(
   hits_table = NULL,
   AF_threshold = 0.8,
-  file.out = "lineage-report.txt",
+  file.out = paste0("lineage_report_", Sys.Date(), ".txt"),
   print.out = FALSE
 )
 }

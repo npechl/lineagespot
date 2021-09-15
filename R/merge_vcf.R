@@ -35,7 +35,7 @@
 merge_vcf <- function(vcf_fls = NULL,
                       vcf_folder = NULL,
                       gff3_path = NULL,
-                      file.out = "vcfList_table.txt",
+                      file.out = paste0("Variant_table_", Sys.Date(), ".txt"),
                       print.out = FALSE) {
 
 

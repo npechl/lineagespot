@@ -31,7 +31,7 @@
 
 lineagespot_hits <- function(vcf_table = NULL,
                              ref_folder = NULL,
-                             file.out = "variantsList.lineagespot.txt",
+                             file.out = paste0("lineage_hits_", Sys.Date(), ".txt"),
                              print.out = FALSE) {
 
 
