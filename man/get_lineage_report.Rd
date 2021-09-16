@@ -15,7 +15,7 @@ get_lineage_report(
 \item{base.url}{The base API URL used to search for lineage reports}
 }
 \value{
-
+List
 }
 \description{
 Title

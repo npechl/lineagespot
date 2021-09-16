@@ -24,7 +24,7 @@
 #' Given name for the output file
 #'
 #'
-#' @return
+#' @return a tab-delimited table with the corresponding hits
 #'
 #' @export lineagespot_hits
 #'

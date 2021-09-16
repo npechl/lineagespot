@@ -42,16 +42,12 @@
 #' @import stringr
 #' @import vcfR
 #'
-#' @return
+#' @return List
 #'
 #' @export merge_vcf
 #'
 #' @examples
 
-# Removes R CMD check NOTE regarding global variables
-utils::globalVariables(c("DP", ".", "AD_alt", "POS", "Gene_Name",
-    "AA_alt", "start_pos", "end_pos", "gene_name", "lineage", 
-    "AF", ""))
 
 lineagespot <- function(vcf_fls = NULL,
                         vcf_folder = NULL,
@@ -93,6 +89,10 @@ lineagespot <- function(vcf_fls = NULL,
 
 }
 
+# Removes R CMD check NOTE regarding global variables
+utils::globalVariables(c("DP", ".", "AD_alt", "POS", "Gene_Name",
+    "AA_alt", "start_pos", "end_pos", "gene_name", "lineage", 
+    "AF", ""))
 
 
 

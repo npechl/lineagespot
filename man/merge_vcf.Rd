@@ -24,7 +24,8 @@ merge_vcf(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-
+a tab-delimited table containing all variants from
+the provided VCFs files
 }
 \description{
 Merge Variant Calling Format (VCF) files into a single tab-delimited table

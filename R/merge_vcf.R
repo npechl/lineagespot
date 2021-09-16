@@ -23,7 +23,8 @@
 #' Path to gff file
 #'
 #'
-#' @return
+#' @return a tab-delimited table containing all variants from 
+#' the provided VCFs files
 #'
 #' @export merge_vcf
 #'

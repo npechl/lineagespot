@@ -2,7 +2,7 @@
 % Please edit documentation in R/lineagespot.R
 \name{lineagespot}
 \alias{lineagespot}
-\title{merge_vcf}
+\title{lineagespot function}
 \usage{
 lineagespot(
   vcf_fls = NULL,
@@ -33,8 +33,9 @@ lineagespot(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-
+List
 }
 \description{
-Merge Variant Calling Format (VCF) files into a single tab-delimited table
+Identify SARS-CoV-2 related mutations based on a single (or a list) of
+variant(s) file(s)
 }

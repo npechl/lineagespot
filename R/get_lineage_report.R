@@ -9,7 +9,7 @@
 #' The base API URL used to search for lineage reports
 #'
 #'
-#' @return
+#' @return List
 #' @export
 #'
 #' @examples
