@@ -7,6 +7,7 @@
 lineagespot_hits(
   vcf_table = NULL,
   ref_folder = NULL,
+  voc = c("B.1.617.2", "B.1.1.7", "B.1.351", "P.1"),
   file.out = paste0("lineage_hits_", Sys.Date(), ".txt"),
   print.out = FALSE
 )
@@ -15,6 +16,8 @@ lineagespot_hits(
 \item{vcf_table}{A tab-delimited table containing all variants for all samples}
 
 \item{ref_folder}{A path to outbreak.info reports}
+
+\item{voc}{a character vector containing the names of the lineages of interest}
 
 \item{file.out}{Given name for the output file}
 

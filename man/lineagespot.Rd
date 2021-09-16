@@ -9,6 +9,7 @@ lineagespot(
   vcf_folder = NULL,
   gff3_path = NULL,
   ref_folder = NULL,
+  voc = c("B.1.617.2", "B.1.1.7", "B.1.351", "P.1"),
   AF_threshold = 0.8,
   file.out.index = Sys.Date(),
   print.out = FALSE
@@ -22,6 +23,8 @@ lineagespot(
 \item{gff3_path}{Path to gff file}
 
 \item{ref_folder}{A path to outbreak.info reports}
+
+\item{voc}{a character vector containing the names of the lineages of interest}
 
 \item{AF_threshold}{A parameter indicating the AF threshold for identifying variants per sample}
 

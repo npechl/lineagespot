@@ -26,6 +26,10 @@
 #'
 #' A path to outbreak.info reports
 #'
+#' @param voc
+#'
+#' a character vector containing the names of the lineages of interest
+#'
 #' @param AF_threshold
 #'
 #' A parameter indicating the AF threshold for identifying variants per sample
@@ -44,6 +48,7 @@ lineagespot <- function(vcf_fls = NULL,
                         vcf_folder = NULL,
                         gff3_path = NULL,
                         ref_folder = NULL,
+                        voc = c("B.1.617.2", "B.1.1.7", "B.1.351", "P.1"),
                         AF_threshold = 0.8,
                         file.out.index = Sys.Date(),
                         print.out = FALSE) {
@@ -59,6 +64,7 @@ lineagespot <- function(vcf_fls = NULL,
 
   hits_table = lineagespot_hits(vcf_table = vcf_table,
                                 ref_folder = ref_folder,
+                                voc = voc,
                                 file.out = paste0("lineage_hits_", file.out.index, ".txt"),
                                 print.out = print.out)
 

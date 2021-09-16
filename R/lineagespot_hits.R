@@ -11,6 +11,10 @@
 #'
 #' A path to outbreak.info reports
 #'
+#' @param voc
+#'
+#' a character vector containing the names of the lineages of interest
+#'
 #' @param print.out
 #'
 #' logical value indicating if the produced table should be printed
@@ -31,6 +35,8 @@
 
 lineagespot_hits <- function(vcf_table = NULL,
                              ref_folder = NULL,
+                             voc = c("B.1.617.2", "B.1.1.7", "B.1.351", "P.1"),
+
                              file.out = paste0("lineage_hits_", Sys.Date(), ".txt"),
                              print.out = FALSE) {
 
@@ -41,11 +47,11 @@ lineagespot_hits <- function(vcf_table = NULL,
 
   }
 
-  if( is.null(ref_folder) ) {
-
-    stop('Please provide a path to outbreak.info VoC reports.')
-
-  }
+  # if( is.null(ref_folder) ) {
+  #
+  #   stop('Please provide a path to outbreak.info VoC reports.')
+  #
+  # }
 
   # clean AA variants ------------------------------------------------------------
 
@@ -73,6 +79,7 @@ lineagespot_hits <- function(vcf_table = NULL,
                      alt_aa = NA,
                      info = NA,
                      codon_num = NA,
+                     codon_start = NA,
                      codon_end = NA)
 
 
@@ -90,7 +97,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
       out$type == aa_variants[[i]][3]
 
-      out$codon_num = codon_num[[i]][1]
+      out$codon_start = codon_num[[i]][1]
       out$codon_end = codon_num[[i]][2]
 
     } else {
@@ -104,11 +111,14 @@ lineagespot_hits <- function(vcf_table = NULL,
 
   aa_split_list = rbindlist(aa_split_list)
 
+  aa_split_list = aa_split_list[, c("ref_aa", "alt_aa", "info", "codon_start", "codon_end"), with = FALSE]
+
   vcf_table = cbind(vcf_table, aa_split_list)
 
   vcf_table$change_length_nt = base::abs(str_length(vcf_table$ALT) - str_length(vcf_table$REF))
 
   vcf_table$codon_num = as.numeric(vcf_table$codon_num)
+  vcf_table$codon_start = as.numeric(vcf_table$codon_start)
   vcf_table$codon_end = as.numeric(vcf_table$codon_end)
 
 
@@ -118,23 +128,41 @@ lineagespot_hits <- function(vcf_table = NULL,
 
   # read reference ---------------------------------------------------------------
 
-  fls_ref = base::list.files(ref_folder,
-                             pattern = "txt",
-                             full.names = TRUE)
+  if(!is.null(ref_folder)) {
+
+    fls_ref = base::list.files(ref_folder,
+                               pattern = "txt",
+                               full.names = TRUE)
+
+    reference_list = list()
+
+    for(i in fls_ref){
+
+      ref = fread(i)
+
+      ref = ref[order(ref$gene), ]
+
+      ref$barcode = paste0(ref$gene, ":", ref$`amino acid`)
+
+      ref$type = "snp"
+
+      ref[which(str_detect(ref$`amino acid`, "del")), ]$type = "deletion"
+
+      reference_list[[i]] = ref
+
+    }
+
+  } else {
+
+    reference_list = get_lineage_report(lineages = voc)
+
+  }
 
   VoC_hits_list = base::list()
 
-  for(ref_index in fls_ref) {
+  for(ref_index in names(reference_list)) {
 
-    ref = fread(ref_index)
-
-    ref = ref[order(ref$gene), ]
-
-    ref$barcode = paste0(ref$gene, ":", ref$`amino acid`)
-
-    ref$type = "snp"
-
-    ref[which(str_detect(ref$`amino acid`, "del")), ]$type = "deletion"
+    ref = reference_list[[ref_index]]
 
     aa_variants = str_split(ref$`amino acid`, "[0-9]|_|\\/")
     codon_num = str_split(ref$`amino acid`, "[A-Z]|[a-z]|\\_|\\*|\\?|\\/")
@@ -157,9 +185,6 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     # VoC hits -----------------------------------------------------------------
 
-    # ref$alt_aa = stringr::str_replace(ref$alt_aa, "\\*", "\\\\*")
-    # vcf_table$alt_aa = stringr::str_replace(vcf_table$alt_aa, "\\*", "\\\\*")
-
     voc_data = list()
 
     for(i in 1:nrow(ref)) {
@@ -176,18 +201,19 @@ lineagespot_hits <- function(vcf_table = NULL,
 
         temp = temp[who, ]
 
-        # temp = temp[base::which(temp$change_length_nt == ref[i,]$change_length_nt), ]
-
       } else {
 
         temp = vcf_table[which(vcf_table$Gene_Name == ref[i,]$gene), ]
         temp = temp[which(str_detect(temp$AA_alt, "del")), ]
 
-        who = which(temp$codon_num == codon_num[[i]][1] | temp$codon_num == codon_num[[i]][2] | temp$codon_end == codon_num[[i]][2] | temp$codon_end == codon_num[[i]][1])
+        who = which(temp$codon_start == codon_num[[i]][1] | temp$codon_start == codon_num[[i]][2])
         temp = temp[who, ]
 
-        # temp = temp[which(temp$codon_end == codon_num[[i]][2]), ]
-        # temp = temp[base::which(temp$change_length_nt == ref[i,]$change_length_nt), ]
+        if(nrow(temp) != 0) {
+
+          temp$AA_alt = ref[i, ]$`amino acid`
+
+        }
 
       }
 
@@ -218,22 +244,6 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     voc_data = voc_data[, .(DP = unique(DP), AD_alt = sum(AD_alt)), by = .(POS, Gene_Name, AA_alt, sample)]
 
-    # voc_data = voc_data[, base::list("DP" = base::unique(.SD[1]),
-    #                                  "AD_alt" = base::sum(.SD[2])),
-    #
-    #                     by = base::list("POS", "Gene_Name", "AA_alt", "sample"),
-    #
-    #                     .SDcols = c("DP", "AD_alt")]
-
-    # voc_positions = base::unique(voc_data[, c("POS", "AA_alt", "Gene_Name"), with = FALSE])
-
-    # voc_data = voc_data[, base::list("DP" = base::sum(.SD[1]),
-    #                                  "AD_alt" = base::sum(.SD[2])),
-    #
-    #                     by = base::list("Gene_Name", "AA_alt", "sample"),
-    #
-    #                     .SDcols = c("DP", "AD_alt")]
-
     voc_data = voc_data[, .(DP = sum(DP), AD_alt = sum(AD_alt)), by = .(Gene_Name, AA_alt, sample)]
 
 
@@ -256,9 +266,6 @@ lineagespot_hits <- function(vcf_table = NULL,
 
   }
 
-
-  # rm(list = setdiff(ls(), c("VoC_hits_list", "meta")))
-
   for(i in base::names(VoC_hits_list)) {
 
     strain = str_split(i, "\\/", simplify = TRUE)
@@ -268,8 +275,6 @@ lineagespot_hits <- function(vcf_table = NULL,
     VoC_hits_list[[i]]$lineage = strain
 
   }
-
-  # rm(i, strain)
 
 
   voc_data = rbindlist(VoC_hits_list)

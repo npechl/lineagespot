@@ -16,4 +16,6 @@ RoxygenNote: 7.1.2
 Imports:
   vcfR,
   data.table,
-  stringr
+  stringr,
+  httr,
+  jsonlite
