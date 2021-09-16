@@ -23,8 +23,6 @@
 #'
 #' Given name for the output file
 #'
-#' @import data.table
-#' @import stringr
 #'
 #' @return
 #'

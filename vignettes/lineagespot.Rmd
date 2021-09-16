@@ -1,0 +1,152 @@
+---
+title: "lineagespot User Guide"
+author:
+- name: Nikolaos Pechlivanis
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+  email: nikosp41@certh.gr
+- name: Maria Tsagiopoulou
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Maria Christina Maniou
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Anastasis Togkousidis
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Evangelia Mouchtaropoulou
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Taxiarchis Chassalevris
+  affiliation: School of Veterinary Medicine, 
+    Aristotle University of Thessaloniki, GR
+- name: Serafeim Chaintoutis
+  affiliation: School of Veterinary Medicine, 
+    Aristotle University of Thessaloniki, GR
+- name: Chrysostomos Dovas
+  affiliation: School of Veterinary Medicine, 
+    Aristotle University of Thessaloniki, GR
+- name: Maria Petala
+  affiliation: Dept. of Civil Engineering, 
+    Aristotle University of Thessaloniki, GR
+- name: Margaritis Kostoglou
+  affiliation: Dept. of Chemistry, 
+    Aristotle University of Thessaloniki, GR
+- name: Thodoris Karapantsios
+  affiliation: Dept. of Chemistry, 
+    Aristotle University of Thessaloniki, GR
+- name: Stamatia Laidou
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Elisavet Vlachonikola
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Anastasia Chatzidimitriou
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Agis Papadopoulos
+  affiliation: EYATH S.A., 
+    Thessaloniki Water Supply and Sewerage Company S.A., Thessaloniki, GR
+- name: Nikolaos Papaioannou
+  affiliation: School of Veterinary Medicine, 
+    Aristotle University of Thessaloniki, GR
+- name: Anagnostis Argiriou
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+- name: Fotis E. Psomopoulos
+  affiliation: Institute of Applied Biosciences, 
+    Centre for Research and Technology Hellas, Thessaloniki, GR
+
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('lineagespot')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{lineagespot User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## For links
+library("BiocStyle")
+## Track time spent on making the vignette
+startTime <- Sys.time()
+## Bib setup
+library("RefManageR")
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    vcfR = citation("vcfR")[1],
+    data.table = citation("data.table")[1],
+    stringr = citation("stringr")[1]
+)
+```
+
+
+<style>
+<!-- h1, h2, h3, h4 { -->
+<!--   color:#17247a; -->
+<!-- } -->
+
+strong {
+    color:#eb6b1c;
+}
+
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE,
+    crop = NULL
+)
+```
+# Introduction
+
+Lineagespot is a framework written in [R](https://www.r-project.org/), which aims 
+to identify SARS-CoV-2 related mutations based on a single (or a list) of 
+variant(s) file(s) (i.e., [variant calling format](https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format)). 
+
+
+## Installation
+
+`lineagespot` is distributed as a [Bioconductor](https://www.bioconductor.org/) 
+package and requires `R` (version "4.1"), which can be installed on any 
+operating system from [CRAN](https://cran.r-project.org/), and 
+Bioconductor (version "3.14").
+
+To install `lineagespot` package enter the following commands in 
+your `R` session:
+
+```{r eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("lineagespot")
+## Check that you have a valid Bioconductor installation
+BiocManager::valid()
+```
+
+## Launching the app
+
+Once `lineagespot` is successfully installed, it can be loaded as follow:
+
+```{r setup}
+library(lineagespot)
+```
+
+
+# Session info {.unnumbered}
+
+Here is the output of `sessionInfo()` on the system on which this document was
+compiled running pandoc ``r rmarkdown::pandoc_version()``:
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
+

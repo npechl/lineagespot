@@ -22,8 +22,6 @@
 #'
 #' Path to gff file
 #'
-#' @import data.table
-#' @import stringr
 #'
 #' @return
 #'
