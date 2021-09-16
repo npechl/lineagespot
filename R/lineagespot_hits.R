@@ -185,7 +185,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     voc_data = list()
 
-    for(i in 1:nrow(ref)) {
+    for(i in seq_len(nrow(ref))) {
 
       if(ref[i,]$type == "snp") {
 
