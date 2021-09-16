@@ -1,0 +1,84 @@
+# YAML 1.2
+---
+authors: 
+  -
+    family-names: Pechlivanis
+    given-names: Nikolaos
+    orcid: "https://orcid.org/0000-0003-2502-612X"
+  -
+    family-names: Tsagiopoulou
+    given-names: Maria
+    orcid: "https://orcid.org/0000-0002-1653-0327"
+  -
+    family-names: Maniou
+    given-names: "Maria Christina"
+    orcid: "https://orcid.org/0000-0002-5029-206X"
+  -
+    family-names: Togkousidis
+    given-names: Anastasis
+    orcid: "https://orcid.org/0000-0003-4306-3709"
+  -
+    family-names: Mouchtaropoulou
+    given-names: Evangelia
+  -
+    family-names: Chassalevris
+    given-names: Taxiarchis
+  -
+    family-names: Chaintoutis
+    given-names: Serafeim
+    orcid: "https://orcid.org/0000-0003-1539-8237"
+  -
+    family-names: Dovas
+    given-names: Chrysostomos
+    orcid: "https://orcid.org/0000-0003-2947-1765"
+  -
+    family-names: Petala
+    given-names: Maria
+    orcid: "https://orcid.org/0000-0001-9980-6802"
+  -
+    family-names: Kostoglou
+    given-names: Margaritis
+    orcid: "https://orcid.org/0000-0001-7955-0002"
+  -
+    family-names: Karapantsios
+    given-names: Thodoris
+    orcid: "https://orcid.org/0000-0001-6641-3359"
+  -
+    family-names: Laidou
+    given-names: Stamatia
+    orcid: "https://orcid.org/0000-0002-4636-1579"
+  -
+    family-names: Vlachonikola
+    given-names: Elisavet
+    orcid: "https://orcid.org/0000-0003-4609-9977"
+  -
+    family-names: Chatzidimitriou
+    given-names: Anastasia
+  -
+    family-names: Papadopoulos
+    given-names: Agis
+    orcid: "https://orcid.org/0000-0002-4470-8903"
+  -
+    family-names: Papaioannou
+    given-names: Nikolaos
+  -
+    family-names: Argiriou
+    given-names: Anagnostis
+    orcid: "https://orcid.org/0000-0002-9164-632X"
+  -
+    family-names: Psomopoulos
+    given-names: "Fotis E."
+    orcid: "https://orcid.org/0000-0002-0222-4273"
+
+
+cff-version: "1.1.0"
+date-released: 2021-03-24
+doi: "10.1101/2021.03.17.21252673"
+keywords: 
+  - "Epidemiology"
+license: MIT
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/BiodataAnalysisGroup/lineagespot"
+title: "Detecting SARS-CoV-2 lineages and mutational load in municipal wastewater; a use-case in the metropolitan area of Thessaloniki, Greece"
+version: "0.99.0"
+...

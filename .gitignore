@@ -1,1 +1,9 @@
 .Rproj.user
+.Rproj
+.rproj
+.Rhistory
+.Rdata
+.renviron
+.rprofile
+dev/
+.html
