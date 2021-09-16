@@ -1,3 +1,6 @@
 ^lineagespot\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^\.github$
+^CITATION\.cff$
+^README\.Rmd$
