@@ -22,12 +22,14 @@
 #' @return
 #' A data table contaiing all variants from each sample of the input VCF files
 #'
-#' @export merge_vcf
+#' @export
 #'
 #' @examples
 #'
-#' merge_vcf(vcf_folder = "system.file("extdata", "vcf-files", package = "lineagespot"),
-#'           gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", package = "lineagespot"))
+#' merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
+#'                                        package = "lineagespot"),
+#'           gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", 
+#'                                        package = "lineagespot"))
 
 
 merge_vcf <- function(vcf_fls = NULL,
@@ -129,7 +131,7 @@ merge_vcf <- function(vcf_fls = NULL,
 
 vcf_to_table <- function(x) {
 
-    out = cbind(x@fix[,1:7],
+    out = cbind(x@fix[, seq_len(7)],
     vcfR::extract_gt_tidy(x, verbose = FALSE),
     vcfR::extract_info_tidy(x))
 
@@ -182,7 +184,7 @@ break_multiple_variants <- function(x) {
 
     out = list()
 
-    for(i in 1:ncol(ALT_matrix)) {
+    for(i in seq_len(ncol(ALT_matrix))) {
 
         who = which(ALT_matrix[,i] != "")
 
@@ -272,7 +274,7 @@ change_AA_abbreviations <- function(x) {
     x$Nt_alt = str_remove_all(x$Nt_alt, "c\\.")
     x$AA_alt = str_remove_all(x$AA_alt, "p\\.")
 
-    for(i in 1:nrow(AA_abbreviations)) {
+    for(i in seq_len(nrow(AA_abbreviations))) {
 
         x$AA_alt = str_replace_all(x$AA_alt,
         AA_abbreviations[i,]$Three_Letter,
@@ -290,7 +292,7 @@ correct_Orf1ab_gene <- function(x, genes) {
 
     x = x[order(x$POS), ]
 
-    for(i in 1:nrow(genes)) {
+    for(i in seq_len(nrow(genes))) {
 
         who = which(x$POS >= genes[i,]$start_pos & x$POS <= genes[i,]$end_pos)
 
@@ -315,7 +317,7 @@ read_gene_coordinates <- function(gff_path) {
 
     colnames(gene_annot) = c("start_pos", "end_pos", "gene_name")
 
-    gene_annot[which(gene_annot$gene_name %in% paste0("NSP", 1:10)), ]$gene_name = "ORF1a"
+    gene_annot[which(gene_annot$gene_name %in% paste0("NSP", seq_len(10))), ]$gene_name = "ORF1a"
 
     gene_annot[which(str_detect(gene_annot$gene_name, "NSP")), ]$gene_name = "ORF1b"
 

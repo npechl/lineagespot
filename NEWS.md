@@ -1,4 +1,4 @@
-# Changes in version 0.99.0 (2021-09-02)
+# Changes in version 0.99.0 (2021-09-17):
 
-* Submitted to Bioconductor
-* Added a `NEWS.md` file to track changes to the package.
+* Submitted package to Bioconductor
+* Added a `NEWS.md` file to track changes of the package

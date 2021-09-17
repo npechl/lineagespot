@@ -1,4 +1,4 @@
-#' outbreak_info_hits
+#' lineagespot_hits
 #'
 #' Find overlapping variants with SARS-CoV-2 reference lineages
 #' coming from outbreak.info reports
@@ -23,18 +23,21 @@
 #' A data table containing all identified SARS-CoV-2 variants
 #' based on the provided reference files
 #'
-#' @export lineagespot_hits
+#' @export
 #'
 #' @examples
 #'
-#' variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", package = "lineagespot"),
-#'                            gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", package = "lineagespot"))
+#' variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
+#'                                               package = "lineagespot"),
+#'                            gff3_path = system.file("extdata", 
+#'                          "NC_045512.2_annot.gff3", package = "lineagespot"))
 #'
 #' lineage_hits_table = lineagespot_hits(vcf_table = variants_table,
-#'                                       voc = c("B.1.1.7", "B.1.617.2))
+#'                                       voc = c("B.1.1.7", "B.1.617.2"))
 #'
 #' lineage_hits_table.2 = lineagespot_hits(vcf_table = variants_table,
-#'                                         ref_folder = system.file("extdata", "ref", package = "lineagespot"))
+#'                                         ref_folder = system.file("extdata", 
+#'                                              "ref", package = "lineagespot"))
 #'
 
 
@@ -186,7 +189,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
         voc_data = list()
 
-        for(i in 1:nrow(ref)) {
+        for(i in seq_len(nrow(ref))) {
 
             if(ref[i,]$type == "snp") {
 

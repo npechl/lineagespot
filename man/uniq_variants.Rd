@@ -27,3 +27,16 @@ abundance of every lineage in each samples
 \description{
 Lineage report for variants overlapping
 }
+\examples{
+
+variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
+                                            package = "lineagespot"),
+                            gff3_path = system.file("extdata", 
+                        "NC_045512.2_annot.gff3", package = "lineagespot"))
+
+lineage_hits_table = lineagespot_hits(vcf_table = variants_table,
+                                        voc = c("B.1.1.7", "B.1.617.2"))
+
+report = uniq_variants(hits_table = lineage_hits_table)
+head(report)
+}

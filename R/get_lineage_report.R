@@ -10,7 +10,7 @@
 #'
 #'
 #' @return A list of data table elements of lineage reports
-#' @export get_lineage_report
+#' @export
 #'
 #' @examples
 #'

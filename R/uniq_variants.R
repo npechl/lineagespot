@@ -12,22 +12,21 @@
 #' @param file.out
 #' Given name for the output file
 #'
-#' @import data.table
-#' @import stringr
-#'
 #' @return A data table with metrics assessing the
 #' abundance of every lineage in each samples
 #'
 #'
-#' @export uniq_variants
+#' @export
 #'
 #' @examples
 #'
-#' variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", package = "lineagespot"),
-#'                            gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", package = "lineagespot"))
+#' variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
+#'                                             package = "lineagespot"),
+#'                             gff3_path = system.file("extdata", 
+#'                         "NC_045512.2_annot.gff3", package = "lineagespot"))
 #'
 #' lineage_hits_table = lineagespot_hits(vcf_table = variants_table,
-#'                                       voc = c("B.1.1.7", "B.1.617.2))
+#'                                         voc = c("B.1.1.7", "B.1.617.2"))
 #'
 #' report = uniq_variants(hits_table = lineage_hits_table)
 #' head(report)

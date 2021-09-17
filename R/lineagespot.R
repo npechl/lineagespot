@@ -40,13 +40,15 @@
 #' 2. Lineage hits
 #' 3. Lineage report
 #'
-#' @export merge_vcf
+#' @export
 #'
 #' @examples
 #'
-#' results = lineagespot(vcf_folder = system.file("extdata", "vcf-files", package = "lineagespot"),
-#'                       gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", package = "lineagespot"),
-#'                       voc = c("B.1.1.7", "B.1.617.2))
+#' results = lineagespot(vcf_folder = system.file("extdata", "vcf-files", 
+#'                                                 package = "lineagespot"),
+#'                     gff3_path = system.file("extdata", 
+#'                         "NC_045512.2_annot.gff3", package = "lineagespot"),
+#'                     voc = c("B.1.1.7", "B.1.617.2"))
 #'
 #' head( results[["lineage.report"]] )
 #'

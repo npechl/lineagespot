@@ -2,7 +2,7 @@
 % Please edit documentation in R/lineagespot_hits.R
 \name{lineagespot_hits}
 \alias{lineagespot_hits}
-\title{outbreak_info_hits}
+\title{lineagespot_hits}
 \usage{
 lineagespot_hits(
   vcf_table = NULL,
@@ -30,4 +30,19 @@ based on the provided reference files
 \description{
 Find overlapping variants with SARS-CoV-2 reference lineages
 coming from outbreak.info reports
+}
+\examples{
+
+variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
+                                              package = "lineagespot"),
+                           gff3_path = system.file("extdata", 
+                         "NC_045512.2_annot.gff3", package = "lineagespot"))
+
+lineage_hits_table = lineagespot_hits(vcf_table = variants_table,
+                                      voc = c("B.1.1.7", "B.1.617.2"))
+
+lineage_hits_table.2 = lineagespot_hits(vcf_table = variants_table,
+                                        ref_folder = system.file("extdata", 
+                                             "ref", package = "lineagespot"))
+
 }
