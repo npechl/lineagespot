@@ -33,7 +33,12 @@ lineagespot(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-List
+A list of three elements;
+\enumerate{
+\item Variants' table
+\item Lineage hits
+\item Lineage report
+}
 }
 \description{
 Identify SARS-CoV-2 related mutations based on a single (or a list) of

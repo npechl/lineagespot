@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_lineage_report.R
 \name{get_lineage_report}
 \alias{get_lineage_report}
-\title{Title}
+\title{get_lineage_report}
 \usage{
 get_lineage_report(
   lineages,
@@ -15,12 +15,14 @@ get_lineage_report(
 \item{base.url}{The base API URL used to search for lineage reports}
 }
 \value{
-List
+A list of data table elements of lineage reports
 }
 \description{
-Title
+Retrieving lineage varinats related information from outbreak.info API
 }
 \examples{
+
+get_lineage_report(lineages = c("B.1.1.7", "B.1.617.2"))
 
 
 }
