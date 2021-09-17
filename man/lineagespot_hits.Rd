@@ -24,7 +24,8 @@ lineagespot_hits(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-a tab-delimited table with the corresponding hits
+A data table containing all identified SARS-CoV-2 variants
+based on the provided reference files
 }
 \description{
 Find overlapping variants with SARS-CoV-2 reference lineages

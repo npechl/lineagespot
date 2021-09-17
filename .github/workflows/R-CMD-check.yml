@@ -3,9 +3,9 @@
 # Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [iofeidis]
+    branches: 
   pull_request:
-    branches: [iofeidis]
+    branches: 
 
 name: R-CMD-check
 

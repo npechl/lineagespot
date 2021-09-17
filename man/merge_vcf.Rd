@@ -15,7 +15,8 @@ merge_vcf(
 \arguments{
 \item{vcf_fls}{A list of paths to vcf files}
 
-\item{vcf_folder}{A path to a folder containing all VCF file that will be integrated into a single table}
+\item{vcf_folder}{A path to a folder containing all VCF file that
+will be integrated into a single table}
 
 \item{gff3_path}{Path to gff file}
 
@@ -24,8 +25,7 @@ merge_vcf(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-a tab-delimited table containing all variants from
-the provided VCFs files
+A data table contaiing all variants from each sample of the input VCF files
 }
 \description{
 Merge Variant Calling Format (VCF) files into a single tab-delimited table

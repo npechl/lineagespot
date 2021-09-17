@@ -21,7 +21,8 @@ uniq_variants(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-a tab-delimited table containing the results
+A data table with metrics assessing the
+abundance of every lineage in each samples
 }
 \description{
 Lineage report for variants overlapping
