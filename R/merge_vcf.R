@@ -18,8 +18,6 @@
 #' @param gff3_path
 #' Path to gff file
 #'
-#' @import data.table
-#' @import stringr
 #'
 #' @return
 #' A data table contaiing all variants from each sample of the input VCF files

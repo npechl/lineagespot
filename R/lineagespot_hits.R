@@ -18,8 +18,6 @@
 #' @param file.out
 #' Given name for the output file
 #'
-#' @import data.table
-#' @import stringr
 #'
 #' @return
 #' A data table containing all identified SARS-CoV-2 variants

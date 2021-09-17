@@ -10,12 +10,24 @@ Authors@R: c(
 Description: Lineagespot is a framework written in R, and aims to identify SARS-CoV-2 related mutations based on a single (or a list) of variant(s) file(s) (i.e., variant calling format)
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+biocViews:
+    VariantDetection,
+    SNP
 Imports:
-  vcfR,
-  data.table,
-  stringr,
-  httr,
-  jsonlite
+    vcfR,
+    data.table,
+    stringr,
+    httr,
+    jsonlite
+Suggests:
+    BiocStyle,
+    RefManageR,
+    rmarkdown,
+    knitr
+URL: https://github.com/BiodataAnalysisGroup/lineagespot
+BugReports: https://github.com/BiodataAnalysisGroup/lineagespot/issues
+BiocType: Software
+VignetteBuilder: knitr

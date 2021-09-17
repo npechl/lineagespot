@@ -8,10 +8,6 @@
 #' @param base.url
 #' The base API URL used to search for lineage reports
 #'
-#' @import jsonlite
-#' @import httr
-#' @import data.table
-#' @import stringr
 #'
 #' @return A list of data table elements of lineage reports
 #' @export get_lineage_report
