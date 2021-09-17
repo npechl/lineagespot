@@ -74,7 +74,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     # merge overall tables -----------------------------------------------------
 
-    aa_split_list = lapply(seq(1:nrow(vcf_table)), function(i) {
+    aa_split_list = lapply(seq_len(nrow(vcf_table)), function(i) {
 
         out = data.table(ref_aa = NA,
         alt_aa = NA,
