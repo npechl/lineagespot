@@ -23,10 +23,8 @@
 #'
 #' Given name for the output file
 #'
-#' @import data.table
-#' @import stringr
 #'
-#' @return
+#' @return a tab-delimited table with the corresponding hits
 #'
 #' @export lineagespot_hits
 #'
@@ -187,7 +185,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     voc_data = list()
 
-    for(i in 1:nrow(ref)) {
+    for(i in seq_len(nrow(ref))) {
 
       if(ref[i,]$type == "snp") {
 

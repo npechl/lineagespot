@@ -21,7 +21,7 @@
 #' @import data.table
 #' @import stringr
 #'
-#' @return
+#' @return a tab-delimited table containing the results
 #' @export uniq_variants
 #'
 #' @examples

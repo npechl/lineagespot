@@ -21,7 +21,7 @@ uniq_variants(
 \item{print.out}{logical value indicating if the produced table should be printed}
 }
 \value{
-
+a tab-delimited table containing the results
 }
 \description{
 Lineage report for variants overlapping

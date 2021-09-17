@@ -8,12 +8,8 @@
 #'
 #' The base API URL used to search for lineage reports
 #'
-#' @import jsonlite
-#' @import httr
-#' @import data.table
-#' @import stringr
 #'
-#' @return
+#' @return List
 #' @export
 #'
 #' @examples

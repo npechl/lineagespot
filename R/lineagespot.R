@@ -1,6 +1,8 @@
-#' merge_vcf
+#' lineagespot function
 #'
-#' Merge Variant Calling Format (VCF) files into a single tab-delimited table
+#'
+#' Identify SARS-CoV-2 related mutations based on a single (or a list) of 
+#' variant(s) file(s)
 #'
 #' @param vcf_fls
 #'
@@ -34,10 +36,13 @@
 #'
 #' A parameter indicating the AF threshold for identifying variants per sample
 #'
+#' @import jsonlite
+#' @import httr
 #' @import data.table
 #' @import stringr
+#' @import vcfR
 #'
-#' @return
+#' @return List
 #'
 #' @export merge_vcf
 #'
@@ -84,6 +89,10 @@ lineagespot <- function(vcf_fls = NULL,
 
 }
 
+# Removes R CMD check NOTE regarding global variables
+utils::globalVariables(c("DP", ".", "AD_alt", "POS", "Gene_Name",
+    "AA_alt", "start_pos", "end_pos", "gene_name", "lineage", 
+    "AF", ""))
 
 
 
