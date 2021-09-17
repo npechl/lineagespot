@@ -1,5 +1,5 @@
 Package: lineagespot
-Title: What the Package Does (One Line, Title Case)
+Title: Detection of SARS-CoV-2 lineages in wastewater samples using next-generation sequencing
 Version: 0.0.0.9000
 Authors@R: c(
     person(given = "Nikolaos",
@@ -7,7 +7,7 @@ Authors@R: c(
            role = c("aut", "cre"),
            email = "nikosp41@certh.gr",
            comment = c(ORCID = "https://orcid.org/0000-0003-2502-612X")))
-Description: What the package does (one paragraph).
+Description: Lineagespot is a framework written in R, and aims to identify SARS-CoV-2 related mutations based on a single (or a list) of variant(s) file(s) (i.e., variant calling format)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
