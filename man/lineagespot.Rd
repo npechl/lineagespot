@@ -2,7 +2,7 @@
 % Please edit documentation in R/lineagespot.R
 \name{lineagespot}
 \alias{lineagespot}
-\title{lineagespot function}
+\title{lineagespot}
 \usage{
 lineagespot(
   vcf_fls = NULL,
@@ -16,28 +16,33 @@ lineagespot(
 )
 }
 \arguments{
-\item{vcf_fls}{A list of paths to vcf files}
+\item{vcf_fls}{A character vector of paths to VCF files}
 
-\item{vcf_folder}{A path to a folder containing all VCF file that will be integrated into a single table}
+\item{vcf_folder}{A path to a folder containing all VCF files
+that will be integrated into a single table}
 
-\item{gff3_path}{Path to gff file}
+\item{gff3_path}{Path to GFF3 file containing SARS-CoV-2 gene coordinates.}
 
-\item{ref_folder}{A path to outbreak.info reports}
+\item{ref_folder}{A path to a folder containing lineage reports}
 
-\item{voc}{a character vector containing the names of the lineages of interest}
+\item{voc}{A character vector containing the names of the lineages of interest}
 
 \item{AF_threshold}{A parameter indicating the AF threshold for identifying variants per sample}
 
-\item{file.out.index}{A string index merged at the output files}
+\item{file.out.index}{A string index that is going to be contained in the output file names}
 
-\item{print.out}{logical value indicating if the produced table should be printed}
+\item{print.out}{Logical value indicating if the produced table should be printed.
+Default value is FALSE.}
 }
 \value{
 A list of three elements;
-\enumerate{
-\item Variants' table
-\item Lineage hits
-\item Lineage report
+\itemize{
+\item Variants' table; A data table containing all variants that are included in
+the input VCF files
+\item Lineage hits; A data table containing identified hits between the input
+variants and outbreak.info's lineage reports
+\item Lineage report; A data table with computed metrics about the prevalence of
+the lineage of interest per sample.
 }
 }
 \description{
@@ -46,12 +51,15 @@ variant(s) file(s)
 }
 \examples{
 
-results = lineagespot(vcf_folder = system.file("extdata", "vcf-files", 
+results = lineagespot(vcf_folder = system.file("extdata", "vcf-files",
                                                 package = "lineagespot"),
-                    gff3_path = system.file("extdata", 
-                        "NC_045512.2_annot.gff3", package = "lineagespot"),
-                    voc = c("B.1.1.7", "B.1.617.2"))
 
-head( results[["lineage.report"]] )
+                      gff3_path = system.file("extdata",
+                                              "NC_045512.2_annot.gff3",
+                                              package = "lineagespot"),
+
+                      voc = c("B.1.1.7", "B.1.617.2"))
+
+head( results$lineage.report )
 
 }

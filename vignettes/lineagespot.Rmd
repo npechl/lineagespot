@@ -108,10 +108,14 @@ knitr::opts_chunk$set(
 ```
 # Introduction
 
-Lineagespot is a framework written in [R](https://www.r-project.org/), which aims 
-to identify SARS-CoV-2 related mutations based on a single (or a list) of 
-variant(s) file(s) (i.e., [variant calling format](https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format)). 
+`lineagespot` is a framework written in R, and aims to identify 
+SARS-CoV-2 related mutations based on a single (or a list) of variant(s) 
+file(s) (i.e., variant calling format). The method can facilitate the 
+detection of SARS-CoV-2 lineages in wastewater samples using next 
+generation sequencing, and attempts to infer the potential distribution 
+of the SARS-CoV-2 lineages. 
 
+# Quick start
 
 ## Installation
 
@@ -132,7 +136,12 @@ BiocManager::install("lineagespot")
 BiocManager::valid()
 ```
 
-## Launching the app
+## Raw data analysis
+
+Example fastq files are provided through [zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.4564182.svg). 
+For the pre processing steps of them, the bioinformatics analysis pipeline is provided [here](../inst/scripts/raw-data-analysis.md).
+
+## Running lineagespot 
 
 Once `lineagespot` is successfully installed, it can be loaded as follow:
 
@@ -140,6 +149,44 @@ Once `lineagespot` is successfully installed, it can be loaded as follow:
 library(lineagespot)
 ```
 
+`lineagespot` can be run by calling one function that implements the overall pipeline:
+
+```{r eval=TRUE}
+results = lineagespot(vcf_folder = system.file("extdata", "vcf-files", 
+                                                package = "lineagespot"),
+
+                      gff3_path = system.file("extdata", 
+                                              "NC_045512.2_annot.gff3", 
+                                              package = "lineagespot"),
+
+                      voc = c("B.1.1.7", "B.1.617.2", "B.1.351"))
+```
+
+## Explore the results
+
+The function returns three tables:
+
+- An overall variant table containing all variants included in the input VCF files, along with the related information (gene, location etc.)  
+
+```{r eval=TRUE}
+# overall table
+head(results$variants.table)
+```
+- A table with the identified overlaps/hits between the variant table and the given lineage reports.
+
+```{r eval=TRUE}
+# lineages' hits
+head(results$lineage.hits)
+```
+
+- A lineage report table where metrics for the abundance of each lineage are computed. 
+  To this end, the mean AF (allele frequence) of the variants per lineage, the mean AF of the unique variants per lineage and the non-zero min. AF of the lineage's unique variants are computed.
+  Moreover given a AF threshold the number of variants in each sample is computed along with the resulting proportion (Number of variants to the number of lineage rules).
+
+```{r eval=TRUE}
+# lineagespot report
+head(results$lineage.report)
+```
 
 # Session info {.unnumbered}
 

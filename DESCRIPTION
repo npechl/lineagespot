@@ -45,8 +45,7 @@ Imports:
     vcfR,
     data.table,
     stringr,
-    httr,
-    jsonlite
+    httr
 Suggests:
     BiocStyle,
     RefManageR,

@@ -1,12 +1,14 @@
 #' get_lineage_report
 #'
-#' Retrieving lineage varinats related information from outbreak.info API
+#' @description
+#' Retrieve information about lineages' variants vie outbreak.info's API
 #'
 #' @param lineages
 #' a character vector containing the names of the lineages of interest
 #'
 #' @param base.url
 #' The base API URL used to search for lineage reports
+#' Default value is "https://api.outbreak.info/genomics/lineage-mutations?pangolin_lineage="
 #'
 #'
 #' @return A list of data table elements of lineage reports

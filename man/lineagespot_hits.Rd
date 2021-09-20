@@ -15,13 +15,13 @@ lineagespot_hits(
 \arguments{
 \item{vcf_table}{A tab-delimited table containing all variants for all samples}
 
-\item{ref_folder}{A path to outbreak.info reports}
+\item{ref_folder}{A path to lineages' reports}
 
-\item{voc}{a character vector containing the names of the lineages of interest}
+\item{voc}{A character vector containing the names of the lineages of interest}
 
 \item{file.out}{Given name for the output file}
 
-\item{print.out}{logical value indicating if the produced table should be printed}
+\item{print.out}{Logical value indicating if the produced table should be printed}
 }
 \value{
 A data table containing all identified SARS-CoV-2 variants
@@ -33,16 +33,23 @@ coming from outbreak.info reports
 }
 \examples{
 
-variants_table = merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
-                                              package = "lineagespot"),
-                           gff3_path = system.file("extdata", 
-                         "NC_045512.2_annot.gff3", package = "lineagespot"))
+variants_table = merge_vcf(vcf_folder = system.file("extdata",
+                                                    "vcf-files",
+                                                    package = "lineagespot"),
+
+                           gff3_path = system.file("extdata",
+                                                   "NC_045512.2_annot.gff3",
+                                                   package = "lineagespot"))
+
+# retrieve lineage reports using outbreak.info's API
 
 lineage_hits_table = lineagespot_hits(vcf_table = variants_table,
                                       voc = c("B.1.1.7", "B.1.617.2"))
 
+
+# use user-specified references
 lineage_hits_table.2 = lineagespot_hits(vcf_table = variants_table,
-                                        ref_folder = system.file("extdata", 
-                                             "ref", package = "lineagespot"))
+                                        ref_folder = system.file("extdata", "ref",
+                                                                 package = "lineagespot"))
 
 }

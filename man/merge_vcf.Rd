@@ -13,16 +13,16 @@ merge_vcf(
 )
 }
 \arguments{
-\item{vcf_fls}{A list of paths to vcf files}
+\item{vcf_fls}{A list of paths to VCF files}
 
 \item{vcf_folder}{A path to a folder containing all VCF file that
 will be integrated into a single table}
 
-\item{gff3_path}{Path to gff file}
+\item{gff3_path}{Path to GFF3 file}
 
 \item{file.out}{Given name for the output file}
 
-\item{print.out}{logical value indicating if the produced table should be printed}
+\item{print.out}{Logical value indicating if the produced table should be printed}
 }
 \value{
 A data table contaiing all variants from each sample of the input VCF files
@@ -32,8 +32,11 @@ Merge Variant Calling Format (VCF) files into a single tab-delimited table
 }
 \examples{
 
-merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
-                                       package = "lineagespot"),
-          gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", 
-                                       package = "lineagespot"))
+merge_vcf(vcf_folder = system.file("extdata",
+                                   "vcf-files",
+                                   package = "lineagespot"),
+
+          gff3_path = system.file("extdata",
+                                  "NC_045512.2_annot.gff3",
+                                  package = "lineagespot"))
 }

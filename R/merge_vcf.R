@@ -1,22 +1,23 @@
 #' merge_vcf
 #'
+#' @description
 #' Merge Variant Calling Format (VCF) files into a single tab-delimited table
 #'
 #' @param vcf_fls
-#' A list of paths to vcf files
+#' A list of paths to VCF files
 #'
 #' @param vcf_folder
 #' A path to a folder containing all VCF file that
 #' will be integrated into a single table
 #'
 #' @param print.out
-#' logical value indicating if the produced table should be printed
+#' Logical value indicating if the produced table should be printed
 #'
 #' @param file.out
 #' Given name for the output file
 #'
 #' @param gff3_path
-#' Path to gff file
+#' Path to GFF3 file
 #'
 #'
 #' @return
@@ -26,10 +27,13 @@
 #'
 #' @examples
 #'
-#' merge_vcf(vcf_folder = system.file("extdata", "vcf-files", 
-#'                                        package = "lineagespot"),
-#'           gff3_path = system.file("extdata", "NC_045512.2_annot.gff3", 
-#'                                        package = "lineagespot"))
+#' merge_vcf(vcf_folder = system.file("extdata",
+#'                                    "vcf-files",
+#'                                    package = "lineagespot"),
+#'
+#'           gff3_path = system.file("extdata",
+#'                                   "NC_045512.2_annot.gff3",
+#'                                   package = "lineagespot"))
 
 
 merge_vcf <- function(vcf_fls = NULL,

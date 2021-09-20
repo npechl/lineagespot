@@ -1,56 +1,67 @@
-#' lineagespot function
+#' lineagespot
 #'
-#'
-#' Identify SARS-CoV-2 related mutations based on a single (or a list) of 
+#' @description
+#' Identify SARS-CoV-2 related mutations based on a single (or a list) of
 #' variant(s) file(s)
 #'
 #' @param vcf_fls
-#' A list of paths to vcf files
+#' A character vector of paths to VCF files
 #'
 #' @param vcf_folder
-#' A path to a folder containing all VCF file that will be integrated into a single table
+#' A path to a folder containing all VCF files
+#' that will be integrated into a single table
 #'
 #' @param print.out
-#' logical value indicating if the produced table should be printed
+#' Logical value indicating if the produced table should be printed.
+#' Default value is FALSE.
 #'
 #' @param file.out.index
-#' A string index merged at the output files
+#' A string index that is going to be contained in the output file names
 #'
 #' @param gff3_path
-#' Path to gff file
+#' Path to GFF3 file containing SARS-CoV-2 gene coordinates.
 #'
 #' @param ref_folder
-#' A path to outbreak.info reports
+#' A path to a folder containing lineage reports
 #'
 #' @param voc
-#' a character vector containing the names of the lineages of interest
+#' A character vector containing the names of the lineages of interest
 #'
 #' @param AF_threshold
 #' A parameter indicating the AF threshold for identifying variants per sample
 #'
-#' @import jsonlite
-#' @import httr
+#' @importFrom httr GET content
 #' @import data.table
 #' @import stringr
-#' @import vcfR
+#' @importFrom vcfR read.vcfR extract_gt_tidy extract_info_tidy
 #'
 #' @return
 #' A list of three elements;
-#' 1. Variants' table
-#' 2. Lineage hits
-#' 3. Lineage report
+#' * Variants' table; A data table containing all variants that are included in
+#' the input VCF files
+#'
+#' * Lineage hits; A data table containing identified hits between the input
+#' variants and outbreak.info's lineage reports
+#'
+#' * Lineage report; A data table with computed metrics about the prevalence of
+#' the lineage of interest per sample.
+#'
+#'
 #'
 #' @export
 #'
 #' @examples
 #'
-#' results = lineagespot(vcf_folder = system.file("extdata", "vcf-files", 
+#' results = lineagespot(vcf_folder = system.file("extdata", "vcf-files",
 #'                                                 package = "lineagespot"),
-#'                     gff3_path = system.file("extdata", 
-#'                         "NC_045512.2_annot.gff3", package = "lineagespot"),
-#'                     voc = c("B.1.1.7", "B.1.617.2"))
 #'
-#' head( results[["lineage.report"]] )
+#'                       gff3_path = system.file("extdata",
+#'                                               "NC_045512.2_annot.gff3",
+#'                                               package = "lineagespot"),
+#'
+#'                       voc = c("B.1.1.7", "B.1.617.2"))
+#'
+#' head( results$lineage.report )
 #'
 
 
@@ -98,9 +109,9 @@ lineagespot <- function(vcf_fls = NULL,
 }
 
 # Removes R CMD check NOTE regarding global variables
-utils::globalVariables(c("DP", ".", "AD_alt", "POS", "Gene_Name",
-    "AA_alt", "start_pos", "end_pos", "gene_name", "lineage", 
-    "AF", ""))
+utils::globalVariables(c("DP", ".", "AD_alt", "POS", "Gene_Name", "AA_alt",
+                         "start_pos", "end_pos", "gene_name", "lineage",
+                         "AF", ""))
 
 
 

@@ -12,13 +12,14 @@ get_lineage_report(
 \arguments{
 \item{lineages}{a character vector containing the names of the lineages of interest}
 
-\item{base.url}{The base API URL used to search for lineage reports}
+\item{base.url}{The base API URL used to search for lineage reports
+Default value is "https://api.outbreak.info/genomics/lineage-mutations?pangolin_lineage="}
 }
 \value{
 A list of data table elements of lineage reports
 }
 \description{
-Retrieving lineage varinats related information from outbreak.info API
+Retrieve information about lineages' variants vie outbreak.info's API
 }
 \examples{
 
