@@ -39,8 +39,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 biocViews:
     VariantDetection,
-    SNP,
-    WholeGenome
+    VariantAnnotation
 Imports:
     vcfR,
     data.table,
