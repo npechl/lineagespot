@@ -40,7 +40,7 @@ RoxygenNote: 7.1.2
 biocViews:
     VariantDetection,
     SNP,
-    Sequencing
+    WholeGenome
 Imports:
     vcfR,
     data.table,

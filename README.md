@@ -6,7 +6,7 @@ Lineagespot is a framework written in [R](https://www.r-project.org/), and aims 
 
 ```r
 # install.packages("devtools")
-devtools::install_github("nikopech/lineagespot")
+devtools::install_github("BiodataAnalysisGroup/lineagespot")
 ```
 
 ## Citation
