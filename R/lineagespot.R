@@ -33,7 +33,7 @@
 #' @importFrom httr GET content
 #' @import data.table
 #' @import stringr
-#' @importFrom vcfR read.vcfR extract_gt_tidy extract_info_tidy
+#' @importFrom VariantAnnotation readVcf
 #'
 #' @return
 #' A list of three elements;
