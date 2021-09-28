@@ -72,7 +72,9 @@ merge_vcf <- function(vcf_fls = NULL,
 
     for(i in vcf_fls) {
 
-        vcf_list[[i]] = vcfR::read.vcfR(i, verbose = FALSE)
+        # vcf_list[[i]] = vcfR::read.vcfR(i, verbose = FALSE)
+        
+        vcf_list[[i]] = readVcf(i)
 
     }
 
@@ -135,11 +137,23 @@ merge_vcf <- function(vcf_fls = NULL,
 
 vcf_to_table <- function(x) {
 
-    out = cbind(x@fix[, seq_len(7)],
-    vcfR::extract_gt_tidy(x, verbose = FALSE),
-    vcfR::extract_info_tidy(x))
+    # out = cbind(x@fix[, seq_len(7)],
+    # vcfR::extract_gt_tidy(x, verbose = FALSE),
+    # vcfR::extract_info_tidy(x))
+    
+    out = cbind(as.data.frame(x@rowRanges),
+                as.data.frame(x@fixed),
+                as.data.frame(x@info))
+    
+    out$ALT = unlist(lapply(out$ALT, function(x){ return(paste(as.character(x), collapse = ",")) }))
+    
+    out$ANN = unlist(lapply(out$ANN, function(x){ return(x[1]) }))
+    
+    out$ID = row.names(out)
+    
+    out$AD = unlist(lapply(x@assays@data$AD, function(x) {return(paste(x, collapse = ","))}))
 
-    out = as.data.table(out)
+    out = setDT(out)
 
     out = out[which(out$ALT != "<*>"), ]
 
@@ -147,13 +161,13 @@ vcf_to_table <- function(x) {
 
     # ANN_matrix = paste0(ANN_matrix[,1], "|", ANN_matrix[,2])
 
-    values_wewant = c("CHROM",
-                      "POS",
+    values_wewant = c("seqnames", # "CHROM",
+                      "start", # "POS",
                       "ID",
                       "REF",
                       "ALT",
-                      "gt_DP",
-                      "gt_AD")
+                      "DP",  # "gt_DP",
+                      "AD" ) # "gt_AD")
 
     result = intersect(values_wewant, colnames(out))
 
@@ -171,6 +185,7 @@ vcf_to_table <- function(x) {
 
     }
 
+    colnames(out) = c("CHROM", "POS", "ID", "REF", "ALT", "DP", "AD")
 
     out$CHROM = str_squish(out$CHROM)
     out$Gene_Name = ANN_matrix[,1]
