@@ -124,10 +124,10 @@ merge_vcf <- function(vcf_fls = NULL,
     if( print.out ) {
 
         fwrite(vcf_list,
-        file = file.out,
-        row.names = FALSE,
-        quote = FALSE,
-        sep = "\t")
+               file = file.out,
+               row.names = FALSE,
+               quote = FALSE,
+               sep = "\t")
 
     }
 
