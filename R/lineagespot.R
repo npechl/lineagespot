@@ -31,9 +31,10 @@
 #' A parameter indicating the AF threshold for identifying variants per sample
 #' 
 #' @import data.table
-#' @import stringr
+#' @importFrom stringr str_detect str_split str_squish str_remove_all 
+#' @importFrom stringr str_replace_all str_detect str_to_upper str_remove str_length
 #' @importFrom httr GET content
-#' @importFrom VariantAnnotation readVcf info fixed 
+#' @importFrom VariantAnnotation readVcf info fixed
 #' @importFrom SummarizedExperiment assays
 #' @importFrom MatrixGenerics rowRanges
 #'
