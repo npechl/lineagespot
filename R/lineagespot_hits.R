@@ -70,13 +70,13 @@ lineagespot_hits <- function(vcf_table = NULL,
     aa_variants = str_split(vcf_table$AA_alt, "[0-9]|_")
     codon_num = str_split(vcf_table$AA_alt, "[A-Z]|[a-z]|\\_|\\*|\\?")
 
-    aa_variants = base::lapply(aa_variants, function(x) {
+    aa_variants = lapply(aa_variants, function(x) {
 
         return( x[x != ""] )
 
     })
 
-    codon_num = base::lapply(codon_num, function(x) {
+    codon_num = lapply(codon_num, function(x) {
 
         return( x[x != ""] )
 
@@ -88,11 +88,11 @@ lineagespot_hits <- function(vcf_table = NULL,
     aa_split_list = lapply(seq_len(nrow(vcf_table)), function(i) {
 
         out = data.table(ref_aa = NA,
-        alt_aa = NA,
-        info = NA,
-        codon_num = NA,
-        codon_start = NA,
-        codon_end = NA)
+                         alt_aa = NA,
+                         info = NA,
+                         codon_num = NA,
+                         codon_start = NA,
+                         codon_end = NA)
 
 
         if(length(aa_variants[[i]]) == 2) {
@@ -177,7 +177,7 @@ lineagespot_hits <- function(vcf_table = NULL,
         aa_variants = str_split(ref$`amino acid`, "[0-9]|_|\\/")
         codon_num = str_split(ref$`amino acid`, "[A-Z]|[a-z]|\\_|\\*|\\?|\\/")
 
-        aa_variants = base::lapply(aa_variants, function(x) {
+        aa_variants = lapply(aa_variants, function(x) {
 
         x = x[x != ""]
 
@@ -187,7 +187,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
         })
 
-        codon_num = base::lapply(codon_num, function(x) {
+        codon_num = lapply(codon_num, function(x) {
 
             return( as.numeric(x[x != ""]) )
 

@@ -141,9 +141,9 @@ vcf_to_table <- function(x) {
     # vcfR::extract_gt_tidy(x, verbose = FALSE),
     # vcfR::extract_info_tidy(x))
     
-    out = cbind(as.data.frame(x@rowRanges),
-                as.data.frame(x@fixed),
-                as.data.frame(x@info))
+    out = cbind(as.data.frame(rowRanges(x)),
+                as.data.frame(fixed(x)),
+                as.data.frame(info(x)))
     
     out$ALT = unlist(lapply(out$ALT, function(x){ return(paste(as.character(x), collapse = ",")) }))
     
@@ -151,7 +151,7 @@ vcf_to_table <- function(x) {
     
     out$ID = row.names(out)
     
-    out$AD = unlist(lapply(x@assays@data$AD, function(x) {return(paste(x, collapse = ","))}))
+    out$AD = unlist(lapply(assays(x)[["AD"]], function(x) {return(paste(x, collapse = ","))}))
 
     out = setDT(out)
 
@@ -209,16 +209,16 @@ break_multiple_variants <- function(x) {
 
 
         out[[i]] = data.table(CHROM = x[who, ]$CHROM,
-        POS = x[who, ]$POS,
-        ID = x[who, ]$ID,
-        REF = x[who, ]$REF,
-        ALT = ALT_matrix[who, i],
-        DP = x[who, ]$DP,
-        AD_ref = AD_matrix[who, 1],
-        AD_alt = AD_matrix[who, i+1],
-        Gene_Name = x[who, ]$Gene_Name,
-        Nt_alt = x[who, ]$Nt_alt,
-        AA_alt = x[who, ]$AA_alt)
+                              POS = x[who, ]$POS,
+                              ID = x[who, ]$ID,
+                              REF = x[who, ]$REF,
+                              ALT = ALT_matrix[who, i],
+                              DP = x[who, ]$DP,
+                              AD_ref = AD_matrix[who, 1],
+                              AD_alt = AD_matrix[who, i+1],
+                              Gene_Name = x[who, ]$Gene_Name,
+                              Nt_alt = x[who, ]$Nt_alt,
+                              AA_alt = x[who, ]$AA_alt)
 
     }
 

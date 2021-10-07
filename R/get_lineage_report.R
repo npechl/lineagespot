@@ -41,12 +41,14 @@ get_lineage_report <- function(lineages, base.url = "https://api.outbreak.info/g
 
             strain$`amino acid` = str_split(strain$mutation, "\\:",
                                             simplify = TRUE)[,2]
+            
+            who = which(strain$type != "deletion")
 
-            strain[which(strain$type != "deletion"), ]$`amino acid` = str_to_upper(strain[which(strain$type != "deletion"), ]$`amino acid`)
+            strain[who, ]$`amino acid` = str_to_upper(strain[who,]$`amino acid`)
 
             strain$barcode = paste0(strain$gene, ":", strain$`amino acid`)
 
-            strain[which(strain$type != "deletion"), ]$type = "snp"
+            strain[who, ]$type = "snp"
 
             out[[l]] = strain
 

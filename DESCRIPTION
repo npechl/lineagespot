@@ -1,7 +1,7 @@
 Package: lineagespot
 Title: Detection of SARS-CoV-2 lineages in wastewater samples using 
     next-generation sequencing
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: c(
     person(given = "Nikolaos",
             family = "Pechlivanis",
@@ -37,9 +37,11 @@ Encoding: UTF-8
 LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-biocViews: VariantDetection, VariantAnnotation
+biocViews: VariantDetection, VariantAnnotation, Sequencing
 Imports:
     VariantAnnotation,
+    MatrixGenerics,
+    SummarizedExperiment,
     data.table,
     stringr,
     httr
