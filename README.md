@@ -9,6 +9,10 @@ Lineagespot is a framework written in [R](https://www.r-project.org/), and aims 
 devtools::install_github("BiodataAnalysisGroup/lineagespot")
 ```
 
+## Raw data analysis
+
+The processing steps of the raw fastq files can be found [here](inst/scripts/raw-data-analysis.md).
+
 ## Citation
 
 If you use the tool, please cite the following work:
