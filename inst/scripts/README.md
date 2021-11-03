@@ -5,6 +5,8 @@
 Example fastq files are provided through [zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.4564182.svg). 
 For the pre processing steps of them, the bioinformatics analysis pipeline is provided [here](raw-data-analysis.md). 
 
+The bioinformatics pipeline used for the analysis is based on the CDC ARTIC on Illumina Bioinformatic Workflow: https://github.com/CDCgov/SARS-CoV-2_Sequencing/tree/master/protocols/BFX-UT_ARTIC_Illumina
+
 ## NC_045512.2 annotation file
 
 The provided gene annotation file (`GFF3`) has been downloaded from [NCBI SARS-CoV-2 resources](https://www.ncbi.nlm.nih.gov/sars-cov-2/). 
