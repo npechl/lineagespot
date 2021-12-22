@@ -68,7 +68,7 @@ merge_vcf <- function(vcf_fls = NULL,
 
     # Read input VCF files -----------------------------------------------------
 
-    vcf_list = base::list()
+    vcf_list = list()
 
     for(i in vcf_fls) {
 
@@ -83,31 +83,31 @@ merge_vcf <- function(vcf_fls = NULL,
 
     # Convert VCF to table -----------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, vcf_to_table)
+    vcf_list = lapply(vcf_list, vcf_to_table)
 
     # break multiple rules -----------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, break_multiple_variants)
+    vcf_list = lapply(vcf_list, break_multiple_variants)
 
     # add variant parameters ---------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, compute_AF)
+    vcf_list = lapply(vcf_list, compute_AF)
 
     # add variant parameters ---------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, change_AA_abbreviations)
+    vcf_list = lapply(vcf_list, change_AA_abbreviations)
 
     # add variant parameters ---------------------------------------------------
 
     genes = read_gene_coordinates(gff_path = gff3_path)
 
-    vcf_list = base::lapply(vcf_list, correct_Orf1ab_gene, genes)
+    vcf_list =lapply(vcf_list, correct_Orf1ab_gene, genes)
 
     # add sample name ----------------------------------------------------------
 
     for(i in names(vcf_list)) {
 
-        sample_name = base::unlist(str_split(i, "\\/"))
+        sample_name = unlist(str_split(i, "\\/"))
         sample_name = sample_name[length(sample_name)]
 
         sample_name = str_split(sample_name, "\\.vcf", simplify = TRUE)[,1]

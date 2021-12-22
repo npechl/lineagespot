@@ -168,7 +168,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     }
 
-    VoC_hits_list = base::list()
+    VoC_hits_list = list()
 
     for(ref_index in names(reference_list)) {
 
@@ -295,7 +295,7 @@ lineagespot_hits <- function(vcf_table = NULL,
 
     }
 
-    for(i in base::names(VoC_hits_list)) {
+    for(i in names(VoC_hits_list)) {
 
         strain = str_split(i, "\\/", simplify = TRUE)
         strain = strain[, ncol(strain)]
