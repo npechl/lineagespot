@@ -68,11 +68,13 @@ merge_vcf <- function(vcf_fls = NULL,
 
     # Read input VCF files -----------------------------------------------------
 
-    vcf_list = base::list()
+    vcf_list = list()
 
     for(i in vcf_fls) {
 
-        vcf_list[[i]] = vcfR::read.vcfR(i, verbose = FALSE)
+        # vcf_list[[i]] = vcfR::read.vcfR(i, verbose = FALSE)
+        
+        vcf_list[[i]] = readVcf(i)
 
     }
 
@@ -81,31 +83,31 @@ merge_vcf <- function(vcf_fls = NULL,
 
     # Convert VCF to table -----------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, vcf_to_table)
+    vcf_list = lapply(vcf_list, vcf_to_table)
 
     # break multiple rules -----------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, break_multiple_variants)
+    vcf_list = lapply(vcf_list, break_multiple_variants)
 
     # add variant parameters ---------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, compute_AF)
+    vcf_list = lapply(vcf_list, compute_AF)
 
     # add variant parameters ---------------------------------------------------
 
-    vcf_list = base::lapply(vcf_list, change_AA_abbreviations)
+    vcf_list = lapply(vcf_list, change_AA_abbreviations)
 
     # add variant parameters ---------------------------------------------------
 
     genes = read_gene_coordinates(gff_path = gff3_path)
 
-    vcf_list = base::lapply(vcf_list, correct_Orf1ab_gene, genes)
+    vcf_list =lapply(vcf_list, correct_Orf1ab_gene, genes)
 
     # add sample name ----------------------------------------------------------
 
     for(i in names(vcf_list)) {
 
-        sample_name = base::unlist(str_split(i, "\\/"))
+        sample_name = unlist(str_split(i, "\\/"))
         sample_name = sample_name[length(sample_name)]
 
         sample_name = str_split(sample_name, "\\.vcf", simplify = TRUE)[,1]
@@ -122,10 +124,10 @@ merge_vcf <- function(vcf_fls = NULL,
     if( print.out ) {
 
         fwrite(vcf_list,
-        file = file.out,
-        row.names = FALSE,
-        quote = FALSE,
-        sep = "\t")
+               file = file.out,
+               row.names = FALSE,
+               quote = FALSE,
+               sep = "\t")
 
     }
 
@@ -135,11 +137,23 @@ merge_vcf <- function(vcf_fls = NULL,
 
 vcf_to_table <- function(x) {
 
-    out = cbind(x@fix[, seq_len(7)],
-    vcfR::extract_gt_tidy(x, verbose = FALSE),
-    vcfR::extract_info_tidy(x))
+    # out = cbind(x@fix[, seq_len(7)],
+    # vcfR::extract_gt_tidy(x, verbose = FALSE),
+    # vcfR::extract_info_tidy(x))
+    
+    out = cbind(as.data.frame(rowRanges(x)),
+                as.data.frame(fixed(x)),
+                as.data.frame(info(x)))
+    
+    out$ALT = unlist(lapply(out$ALT, function(x){ return(paste(as.character(x), collapse = ",")) }))
+    
+    out$ANN = unlist(lapply(out$ANN, function(x){ return(x[1]) }))
+    
+    out$ID = row.names(out)
+    
+    out$AD = unlist(lapply(assays(x)[["AD"]], function(x) {return(paste(x, collapse = ","))}))
 
-    out = as.data.table(out)
+    out = setDT(out)
 
     out = out[which(out$ALT != "<*>"), ]
 
@@ -147,13 +161,13 @@ vcf_to_table <- function(x) {
 
     # ANN_matrix = paste0(ANN_matrix[,1], "|", ANN_matrix[,2])
 
-    values_wewant = c("CHROM",
-                      "POS",
+    values_wewant = c("seqnames", # "CHROM",
+                      "start", # "POS",
                       "ID",
                       "REF",
                       "ALT",
-                      "gt_DP",
-                      "gt_AD")
+                      "DP",  # "gt_DP",
+                      "AD" ) # "gt_AD")
 
     result = intersect(values_wewant, colnames(out))
 
@@ -171,6 +185,7 @@ vcf_to_table <- function(x) {
 
     }
 
+    colnames(out) = c("CHROM", "POS", "ID", "REF", "ALT", "DP", "AD")
 
     out$CHROM = str_squish(out$CHROM)
     out$Gene_Name = ANN_matrix[,1]
@@ -194,16 +209,16 @@ break_multiple_variants <- function(x) {
 
 
         out[[i]] = data.table(CHROM = x[who, ]$CHROM,
-        POS = x[who, ]$POS,
-        ID = x[who, ]$ID,
-        REF = x[who, ]$REF,
-        ALT = ALT_matrix[who, i],
-        DP = x[who, ]$DP,
-        AD_ref = AD_matrix[who, 1],
-        AD_alt = AD_matrix[who, i+1],
-        Gene_Name = x[who, ]$Gene_Name,
-        Nt_alt = x[who, ]$Nt_alt,
-        AA_alt = x[who, ]$AA_alt)
+                              POS = x[who, ]$POS,
+                              ID = x[who, ]$ID,
+                              REF = x[who, ]$REF,
+                              ALT = ALT_matrix[who, i],
+                              DP = x[who, ]$DP,
+                              AD_ref = AD_matrix[who, 1],
+                              AD_alt = AD_matrix[who, i+1],
+                              Gene_Name = x[who, ]$Gene_Name,
+                              Nt_alt = x[who, ]$Nt_alt,
+                              AA_alt = x[who, ]$AA_alt)
 
     }
 

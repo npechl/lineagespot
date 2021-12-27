@@ -78,7 +78,6 @@ library("RefManageR")
 bib <- c(
     R = citation(),
     BiocStyle = citation("BiocStyle")[1],
-    vcfR = citation("vcfR")[1],
     data.table = citation("data.table")[1],
     stringr = citation("stringr")[1]
 )

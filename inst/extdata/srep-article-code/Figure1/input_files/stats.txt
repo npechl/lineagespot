@@ -1,0 +1,16 @@
+CoV19_L1_S1: 
+
+	N raw reads: 453902 ( R1 226951 +  R2 226951 )
+
+	N trimmed reads: 442676 ( R1 221338 + R2 221338 )
+
+	N of input to freebayes reads: 181880
+
+
+L1_S22_L001: 
+
+	N raw reads: 176380 ( R1 88190 +  R2 88190 )
+
+	N trimmed reads: 171312( R1 85656 + R2 85656 )
+
+	N of input to freebayes reads: 69706

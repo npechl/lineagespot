@@ -29,11 +29,14 @@
 #'
 #' @param AF_threshold
 #' A parameter indicating the AF threshold for identifying variants per sample
-#'
-#' @importFrom httr GET content
+#' 
 #' @import data.table
-#' @import stringr
-#' @importFrom vcfR read.vcfR extract_gt_tidy extract_info_tidy
+#' @importFrom stringr str_detect str_split str_squish str_remove_all 
+#' @importFrom stringr str_replace_all str_detect str_to_upper str_remove str_length
+#' @importFrom httr GET content
+#' @importFrom VariantAnnotation readVcf info fixed
+#' @importFrom SummarizedExperiment assays
+#' @importFrom MatrixGenerics rowRanges
 #'
 #' @return
 #' A list of three elements;
